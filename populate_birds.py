@@ -1,3 +1,4 @@
+# populates birds
 import os
 # configuring the default environement 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'whistly_project.settings')
