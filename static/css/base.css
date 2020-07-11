@@ -1,0 +1,153 @@
+/* general */
+body {
+  font-family: 'Caladea', serif;
+  /* background: url("/static/img/background.jpg") 50% 0 no-repeat fixed; */
+}
+
+h4{
+  color: #2196f3 !important
+}
+
+/* for debug */
+/* * { border: 1px solid red; } */
+
+button{
+  width: 200px;
+  height: 60px;
+  margin-top: 10px;
+}
+
+/* base */
+#base_h1{
+  font-size: 60px;
+}
+#base_h6{
+  font-size: 30px;
+}
+
+/* home */
+.home_text {
+  text-align: center;
+  margin-bottom: 50px;
+}
+ 
+.jumbo{
+  margin-top: 15px;
+}
+
+/* gallery */
+
+
+
+
+/* profile detail*/
+.profile_picture {
+  height: 100px; 
+  width: auto;
+  background-color: cornsilk;
+  border-radius: 50%;
+  border: 3px solid black;
+}
+.profile_card {
+  width: 300px;
+}
+
+.profile_info{
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.profile_btn{
+  width: 100px;
+  
+  font-size: 15px;
+}
+
+.profile_birds{
+  width: 240px;
+  height: 182px;
+}
+
+.slide_image{
+  width: 300px;
+  height: 600px;
+}
+
+.profile_pictures {
+  height: 200px; 
+  width: auto;
+  background-color: cornsilk;
+  border-radius: 50%;
+  border: 3px solid black;
+}
+
+
+/* bird's nest */
+
+.bird_nest_img_container{
+  height: 600px;
+}
+
+.bird_nest_image {
+  height: auto;
+  max-height: 100%;
+  width: auto;
+  max-width: 100%;
+  box-shadow: 0 1px 3px rgba(0,0,30,.3);
+  background: linear-gradient(45deg,#efefef 25%,transparent 0,transparent 75%,#efefef 0,#efefef),linear-gradient(45deg,#efefef 25%,transparent 0,transparent 75%,#efefef 0,#efefef);
+}
+
+
+
+/* bird_details */
+.bird_detail_btn{
+  width: 100px;
+  margin-top: 20px;
+  margin-right: 20px;
+  margin-bottom: 30px;
+}
+
+
+.bird_detail_info{
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.bird_detail_img_container{
+  max-height: 800px;
+}
+
+
+.bird_detail_image {
+  zoom: 2;  
+  display: block;
+  margin: auto;
+  height: auto;
+  max-height: 100%;
+  width: auto;
+  max-width: 100%;
+  box-shadow: 0 1px 3px rgba(0,0,30,.3);
+  background: linear-gradient(45deg,#efefef 25%,transparent 0,transparent 75%,#efefef 0,#efefef),linear-gradient(45deg,#efefef 25%,transparent 0,transparent 75%,#efefef 0,#efefef);
+}
+
+
+
+@media (min-width: 768px) {
+  .carousel-multi-item-2 .col-md-3 {
+  float: left;
+  width: 25%;
+  max-width: 100%; } }
+  
+.carousel-multi-item-2 .card img {
+  border-radius: 2px; }
+
+.comment_picture_size{
+    width: 64px;
+    height: 64px;
+  }
+  
+.comment_box_btn{
+  width: 100px;
+  height: auto;
+
+}

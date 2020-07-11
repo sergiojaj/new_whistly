@@ -1,0 +1,18 @@
+{% extends '_base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Feathers UP{% endblock title %}
+
+{% block content %}
+
+<div class="container mb-4" align=center style="width: 400px;">
+    <h3>Enter details bellow</h3>
+    <p>Make sure to add as much details as possible.</p>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary">Hatch Egg</button>
+    </form>
+</div>
+
+{% endblock content %}

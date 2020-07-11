@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="Description" content="Enter your description here"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+{% block extra_stylesheet %}{% endblock extra_stylesheet %}
+
+<title>{% block title %}Whistly{% endblock title %}</title>
+</head>
+<body>
+
+<div id="main-div">
+  
+  <!-- navbar -->
+    <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <div class="navbar-header">
+          <a href="{% url 'home' %}" class="navbar-brand">
+            <img src="{% static 'img/icon.png' %}" width="30" height="30" class="d-inline-block align-top" alt="icon">
+            Whistly
+          </a>
+        </div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" 
+              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" style="width: 60px; height: 35px">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'profile_detail' pk=user.pk %}">{{ user|title }}'s Flock</a></li>
+            <li class="nav-item">
+          {% endif %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'birds_nest' %}">Bird's Nest</a></li>
+        </ul>
+        
+        <ul class="navbar-nav ml-auto">
+          
+          {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'add_bird' %}">Feathers UP</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
+            </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'account_login' %}">Login</a>
+          </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'account_signup' %}">Sign Up</a>
+            </li>
+          {% endif %}
+          <form action="{% url 'search_results' %}" method="GET" class="form-inline my-2 my-lg-0">
+            <input name='q' class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+          </form>
+        </ul>
+      </div>
+      </div>
+    </nav>
+  
+  
+  <!-- intro text -->
+    <div class="container" style="padding-top: 70px" align=center>
+          <h1 id="base_h1">Birds are everywhere!</h1>
+          <h6 id="base_h6" class="mb-5">Let's not let them go unnoticed.</h6>
+    </div>
+        
+    
+      {% block content %}
+      {% endblock content %}
+</div>
+  
+  
+
+<script src="{% static 'js/base.js' %}" ></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script src="https://kit.fontawesome.com/e27a9e42a9.js" crossorigin="anonymous"></script>
+</body>
+</html>

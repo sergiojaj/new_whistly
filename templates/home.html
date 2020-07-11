@@ -1,0 +1,75 @@
+{% extends '_base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Home{% endblock title %}
+
+{% block content %}
+
+    <div class="container home_text">
+        <h3>Take pictures of the birds you see during your day... 
+            or night and upload them to Whistly.</h3>
+    
+        <h3>With these pictures we hope to make people conscious
+            of our feathered neighbors!</h3>
+    </div>
+<!-- 
+    {{ user.email }}
+    <img src="{{ user.profile_picture.url }}" alt=""> -->
+
+    <div class="container" align=center>
+
+    <div class="row">
+        <div class="col-lg-4">
+          <img class="rounded-circle" src="{% static 'img/hide&seek.jpg' %}" alt="Generic placeholder image" width="140" height="140">
+          <h2>Step one - Hide & Seek</h2>
+          <p>The first step is to locate the bird and this can be tricky! 
+              A Few birds are exhibitionists but most are quite shy on cameras and reluctant to show off their beauty for stranger. 
+              Be very quite and try to mingle to their environement not to disturb or send away our little friends!</p>
+          
+        </div><!-- /.col-lg-4 -->
+        <div class="col-lg-4">
+          <img class="rounded-circle" src="{% static 'img/patient.jpg' %}" alt="Generic placeholder image" width="140" height="140">
+          <h2>Step Two - Be Patient!</h2>
+          <p>The second step is to be very patient and let the bird feel comfortable with your presence. A startled bird will not pose for your lens and will probably just fly away.
+            Take your time and it will be reward with the most beautiful pictures. 
+          </p>
+          
+        </div><!-- /.col-lg-4 -->
+        <div class="col-lg-4">
+          <img class="rounded-circle" src="{% static 'img/share.jpg' %}" alt="Generic placeholder image" width="140" height="140">
+          <h2>Step Three - Share the best pictures!</h2>
+          <p>The third step is easy: Select the best pictures you took and share with our community! Just login and start uploading.
+              Share as much detail you can about the bird and the place you took the picture. We are more than happy to receive your contribution!
+          </p>
+          
+        </div><!-- /.col-lg-4 -->
+      </div><!-- /.row -->
+    </div>
+        
+        <!-- <div class="button-box col-lg-12 mt-2"> -->
+        <div class="jumbotron jumbo" align=center>
+
+            {% if user.is_authenticated %}
+                <h3 class="mb-4">To start sharing with our community,</h3> 
+                <h3>simply click the button bellow.</h3>
+                    <a href="#"><button class="btn btn-info home_gallery_btn" style="height: 70px; width: 250px">Feathers UP!</button></a>
+            {% else %}
+                <form method="POST" action="{% url 'account_login' %}">
+                    {% csrf_token %}
+                    <h3>Click 
+                        <a href="#">here</a>
+                        to find out more about our project,</h3>
+                    <h3>or simply sign up with us...</h3>
+                    <a href="{% url 'account_login' %}" class="mr-3"><button class="btn btn-info home_login_btn">Login In</button></a>
+                    <a href="{% url 'account_signup' %}" class="mr-3"><button class="btn btn-info home_signup_btn">Sign Up</button></a>
+                </form>
+            {% endif %}
+        </div>
+        <!-- </div> -->
+
+        
+
+
+
+{% endblock content %}

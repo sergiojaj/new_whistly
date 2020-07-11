@@ -1,0 +1,31 @@
+{% extends '_base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block title %}Remove Bird{% endblock title %}
+
+   
+{% block content %}
+    <div class="row">
+        <div class="container" style="text-align: center;">
+            <div class="col-12">
+                <h4 class="mb-3">Are you sure you want to remove <b>{{ bird.species }}</b> from your collection?</h4>
+                <img src="{{ bird.picture.url }}" alt="bird picture" style="height: 250px; width: 300px;">
+            </div>
+            <div class="col-12">
+                <form action="" method="POST"> {% csrf_token %}
+                    {{ form|crispy }}
+                    <button class="btn btn-danger mr-4" type="submit">Yes, remove bird.</button>
+                </form>
+            </div>
+            <div class="col-12">
+                <a href="{% url 'bird_detail' pk=bird.pk %}">
+                    <button class="btn btn-secondary">No, I've changed my mind.</button>
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock content %}

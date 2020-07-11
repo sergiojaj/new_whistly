@@ -1,0 +1,55 @@
+{% extends '_base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Bird's Nest{% endblock title %}
+
+{% block content %}
+
+<div class="container" align=center>
+
+    <h3>Check out our most recent contributions</h3>
+    
+    <hr class="mb-4">
+
+    <div class="row">
+        {% for bird in birds_list %}
+            <div class="col-sm-6 col-md-6 col-lg-4">
+                <div class="thumbnail">
+                    <a href="{{ bird.get_absolute_url }}">
+                        <img class="" src="{{ bird.picture.url }}" alt="{{ bird.species }}" style="height: 250px; width: 330px">
+                    </a>
+                <div class="caption">
+                    <h3>Species: {{bird.species}}</h3>
+                    <a href="{% url 'profile_detail' pk=bird.photographer.pk %}">
+                        <p>Photographer: {{bird.photographer}}</p>
+                    </a>
+                    <hr class="bird_gallery_sep mb-2">
+                </div>
+                </div>
+            </div>
+        {% endfor %}
+        
+        <div class="container">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; First</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                {% endif %}
+        
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+        
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">Next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock content %}
+
