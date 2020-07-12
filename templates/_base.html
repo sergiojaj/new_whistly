@@ -47,6 +47,9 @@
             <li class="nav-item">
               <a class="nav-link" href="{% url 'add_bird' %}">Feathers UP</a>
             </li>
+            <form action="{% url 'search_results' %}" method="GET" class="form-inline my-2 my-lg-0">
+              <input name='q' class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            </form>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
             </li>
@@ -58,23 +61,19 @@
               <a class="nav-link" href="{% url 'account_signup' %}">Sign Up</a>
             </li>
           {% endif %}
-          <form action="{% url 'search_results' %}" method="GET" class="form-inline my-2 my-lg-0">
-            <input name='q' class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-          </form>
+
         </ul>
       </div>
       </div>
     </nav>
-  
   
   <!-- intro text -->
     <div class="container" style="padding-top: 70px" align=center>
           <h1 id="base_h1">Birds are everywhere!</h1>
           <h6 id="base_h6" class="mb-5">Let's not let them go unnoticed.</h6>
     </div>
-        
-    
-      {% block content %}
+
+    {% block content %}
       {% endblock content %}
 </div>
   
