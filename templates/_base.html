@@ -9,7 +9,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
 <link rel="stylesheet" href="{% static 'css/base.css' %}">
-{% block extra_stylesheet %}{% endblock extra_stylesheet %}
 
 <title>{% block title %}Whistly{% endblock title %}</title>
 </head>
@@ -31,6 +30,7 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        
         <ul class="navbar-nav mr-auto">
           {% if user.is_authenticated %}
             <li class="nav-item">
@@ -42,27 +42,27 @@
         </ul>
         
         <ul class="navbar-nav ml-auto">
-          
           {% if user.is_authenticated %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'add_bird' %}">Feathers UP</a>
-            </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'add_bird' %}">Feathers UP</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
+              </li>
+              {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'account_login' %}">Login</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'account_signup' %}">Sign Up</a>
+              </li>
+          {% endif %}
+            <!-- search form -->
             <form action="{% url 'search_results' %}" method="GET" class="form-inline my-2 my-lg-0">
               <input name='q' class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
             </form>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
-            </li>
-          {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'account_login' %}">Login</a>
-          </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'account_signup' %}">Sign Up</a>
-            </li>
-          {% endif %}
-
         </ul>
+
       </div>
       </div>
     </nav>

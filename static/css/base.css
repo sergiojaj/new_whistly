@@ -1,7 +1,7 @@
 /* general */
 body {
   font-family: 'Caladea', serif;
-  /* background: url("/static/img/background.jpg") 50% 0 no-repeat fixed; */
+  background: url("/static/img/background.jpg");
 }
 
 h4{

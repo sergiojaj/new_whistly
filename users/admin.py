@@ -16,5 +16,3 @@ class CustomUserAdmin(UserAdmin):
     list_display = ['email','profile_picture','registered_at','is_staff',]
 
 admin.site.register(CustomUser, CustomUserAdmin)
-
-
