@@ -13,8 +13,7 @@
 
     <div class="row">
         {% for bird in birds_list %}
-            <div class="col-sm-6 col-md-6 col-lg-4">
-                <div class="thumbnail">
+            <div class="col-sm-6 col-md-6 col-lg-4 p-3">
                     <a href="{{ bird.get_absolute_url }}">
                         <img class="" src="{{ bird.picture.url }}" alt="{{ bird.species }}" style="height: 250px; width: 330px">
                     </a>
@@ -23,8 +22,7 @@
                     <a href="{% url 'profile_detail' pk=bird.photographer.pk %}">
                         <p>Photographer: {{bird.photographer}}</p>
                     </a>
-                    <hr class="bird_gallery_sep mb-2">
-                </div>
+                    <!-- <hr class="bird_gallery_sep mb-2"> -->
                 </div>
             </div>
         {% endfor %}

@@ -1,12 +1,15 @@
 /* general */
 body {
   font-family: 'Caladea', serif;
-  background: url("/static/img/background.jpg");
+  /* background: url("/static/img/background4.jpg");
+  background-size: cover; 
+  color: white; */
+  
+}
+.tips-text {
+  color: coral;
 }
 
-h4{
-  color: #2196f3 !important
-}
 
 /* for debug */
 /* * { border: 1px solid red; } */
