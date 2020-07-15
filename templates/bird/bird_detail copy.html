@@ -164,9 +164,7 @@
 
 <!-- loads replies not yet approved visible only to photograher and reply creator -->
   {% if user == bird_detail.photographer or user == reply.reply_creator %}
-
-  
-    <ul class="mb-5">
+      <ul class="mb-5">
         <hr class="featurette-divider">
         <div class="media mt-3 px-3 py-3" style="background-color:{% cycle '#fffad4' '#ffe6d4' '#faf8f7' '#e1e9f5' '#fffad4' %}; border-radius: 5%" >
           <a href="{% url 'profile_detail' pk=comment.comment_creator.pk %}">
@@ -239,7 +237,7 @@
 {% else %}
   <!-- comments will be visiable only to photographer or user who created the comment awaiting approval by photographer. -->
     {% if user == bird_detail.photographer or user == comment.comment_creator %}
-      <hr class="featurette-divider">
+        <hr class="featurette-divider">
         <div class="media mt-3 px-3 py-3" style="background-color:{% cycle '#faf8f7' '#e1e9f5' '#e6e1f5' '#fffad4' %}; border-radius: 5%">
             <a href="{% url 'profile_detail' pk=comment.comment_creator.pk %}">
               <img class="d-flex rounded-circle avatar z-depth-1-half mr-3 comment_picture_size" src="{{ comment.comment_creator.profile_picture.url }}"
@@ -267,7 +265,7 @@
                   </a>
                 {% endif %}
               </div>
-        </div>
+            </div>
             <div class="row">
               <div class="col-12" align=right>
                 <span class="text-muted">Created at: {{ comment.created }}</span>
