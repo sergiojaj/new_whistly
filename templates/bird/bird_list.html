@@ -20,7 +20,7 @@
                 <div class="caption">
                     <h3>Species: {{bird.species}}</h3>
                     <a href="{% url 'profile_detail' pk=bird.photographer.pk %}">
-                        <p>Photographer: {{bird.photographer}}</p>
+                        <p>Photographer: {{bird.photographer|capfirst}}</p>
                     </a>
                     <!-- <hr class="bird_gallery_sep mb-2"> -->
                 </div>
