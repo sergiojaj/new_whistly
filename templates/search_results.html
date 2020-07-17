@@ -1,72 +1,83 @@
-{% extends '_base.html' %}
-{% load crispy_forms_tags %}
-
-
-{% block title %}Whistly - Search Page{% endblock title %}
-
-{% block content %}
-
+{% extends '_base.html' %} {% load crispy_forms_tags %} {% block title %}Whistly
+- Search Page{% endblock title %} {% block content %}
 
 <div class="container">
-    
-    <div class="row">
-        
-        <div class="col-md-12" align=center>
-            <h2 class="mb-3"><i class="fa fa-file-o"></i> Search Result</h2>
-            <h5 class="mb-3">Please find bellow the result of your search</h5>
-            <form action="{% url 'search_results' %}" method="GET">
-                <input type="text" name="q" class="form-control" placeholder="eg.: bird species... location... photographer" style="width: 600px;">
-                <button class="btn btn-info btn-sm" type="button"><i class="fa fa-search"></i></button>
-            </form>
-            <hr>
-            <p>Showing all results matching <strong>{{user_search}}</strong></p>
-        </div>
-
+  <div class="row">
+    <div class="col-md-12" align="center">
+      <h2 class="mb-3"><i class="fa fa-file-o"></i> Search Result</h2>
+      <h5 class="mb-3">Please find bellow the result of your search</h5>
+      <form action="{% url 'search_results' %}" method="GET">
+        <input
+          type="text"
+          name="q"
+          class="form-control"
+          placeholder="eg.: bird species... location... photographer"
+          style="width: 600px;"
+        />
+        <button class="btn btn-info btn-sm" type="button">
+          <i class="fa fa-search"></i>
+        </button>
+      </form>
+      <hr />
+      <p>Showing all results matching <strong>{{user_search}}</strong></p>
     </div>
+  </div>
 
-    <div class="row">
-        <!-- BEGIN ORDER RESULT -->
-        <div class="col-sm-6">
-          <div class="btn-group">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-              Order by <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-              <li><a href="#">Species</a></li>
-              <li><a href="#">Most Recent</a></li>
-              <li><a href="#">Photographer</a></li>
-              <li><a href="#">Seeds</a></li>
-              <li><a href="#">Nº. Comments</a></li>
-            </ul>
-          </div>
-        </div>
-        <!-- END ORDER RESULT -->
-    
-                    <!-- BEGIN TABLE RESULT -->
+  <div class="row">
+    <!-- BEGIN ORDER RESULT -->
+    <div class="col-sm-6">
+      <div class="btn-group">
+        <button
+          type="button"
+          class="btn btn-default dropdown-toggle"
+          data-toggle="dropdown"
+        >
+          Order by <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          <li><a href="#">Species</a></li>
+          <li><a href="#">Most Recent</a></li>
+          <li><a href="#">Photographer</a></li>
+          <li><a href="#">Seeds</a></li>
+          <li><a href="#">Nº. Comments</a></li>
+        </ul>
+      </div>
+    </div>
+    <!-- END ORDER RESULT -->
+
+    <!-- BEGIN TABLE RESULT -->
     <div class="table-responsive">
-        <table class="table table-hover">
-          <tbody>
-            {% for result in bird_list %}
-            <tr>
-                <td class="number text-center"></td>
-                <td class="image">
-                    <a href="{{ result.get_absolute_url }}">
-                        <img src="{{ result.picture.url }}" alt="" style="height: 150px; width: 200px">
-                    </a>
-                    </td>
-                <td class="description"><strong>{{ result.species }}</strong><br>{{ result.photographer_comment }}</td>
-                <td class="seeds text-right">
-                    <span>Seeds:
-                        <i class="fas fa-seedling"> {{result.seeds.count}}</i>
-                    </span>
-                </td>
-                <td class="photographer text-right">{{ result.photographer }}</td>
-            </tr>
-            {% endfor %}
-        </tbody></table>
+      <table class="table table-hover">
+        <tbody>
+          {% for result in bird_list %}
+          <tr>
+            <td class="number text-center"></td>
+            <td class="image">
+              <a href="{{ result.get_absolute_url }}">
+                <img
+                  src="{{ result.picture.url }}"
+                  alt=""
+                  style="height: 150px; width: 200px;"
+                />
+              </a>
+            </td>
+            <td class="description">
+              <strong>{{ result.species }}</strong><br />
+              {{result.photographer_comment }}
+            </td>
+            <td class="seeds text-right">
+              <span>
+                <i class="fas fa-seedling"> {{result.seeds.count}}</i>
+              </span>
+            </td>
+            <td class="photographer text-right">{{ result.photographer|capfirst }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
-      <!-- END TABLE RESULT -->
-
+    <!-- END TABLE RESULT -->
+  </div>
 </div>
 
-{% endblock content %}
+  {% endblock content %}
