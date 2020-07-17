@@ -50,11 +50,9 @@
                             </button>
                           </a>
                         {% else %}
-                          <a href="{% url 'seed' pk=bird_detail.pk %}">
                             <button class="btn btn-dark bird_detail_btn" disabled>
                               <i class="fas fa-seedling"> {{bird_detail.seeds.count}} Seeds</i> 
                             </button>
-                          </a>
                         {% endif %}
                     </div>
                   </div>
@@ -113,6 +111,9 @@
                     </a>
                   </div>
             {% endif %}
+            <div class="">
+              <button onclick="myFunc()" class="btn btn-info comment_box_btn">Reply</button>
+            </div>
           </div>
           <!-- ends comments btns -->
     </div>
@@ -148,6 +149,7 @@
                 </a>
               </div>
           {% endif %} 
+
           </div>
           <!-- ends comments btns -->
     </div>
@@ -202,22 +204,26 @@
 {% endfor %}
 <!-- still inside comment's forloop -->
 <!-- loads reply textarea to add replies for all comments -->
-  <ul class="mb-1 ml-3" id='reply_box' >
-    <div class="media mt-3">
-      <a href="{% url 'profile_detail' pk=comment.comment_creator.pk %}">
-        <img class="d-flex rounded-circle avatar z-depth-1-half mr-3 comment_picture_size" src="{{ user.profile_picture.url }}"
-        alt="Avatar">
-      </a>
-      <div class="media-body">
-      <h5 class="mt-0 font-weight-bold blue-text">{{user.username|capfirst}}
-        </h5>
-        <form align=center action="{% url 'bird_detail' pk=comment.pk %}" method="POST"> {% csrf_token %}
-          {{reply_form|crispy}}
-          <input type="submit" class="btn btn-primary" value="Reply">
-        </form>
+
+<div id='ReplyBox'>
+
+  <ul class="mb-1 ml-3">
+      <div class="media mt-3">
+        <a href="{% url 'profile_detail' pk=comment.comment_creator.pk %}">
+          <img class="d-flex rounded-circle avatar z-depth-1-half mr-3 comment_picture_size" src="{{ user.profile_picture.url }}"
+          alt="Avatar">
+        </a>
+        <div class="media-body">
+        <h5 class="mt-0 font-weight-bold blue-text">{{user.username|capfirst}}
+          </h5>
+          <form align=center action="{% url 'bird_detail' pk=comment.pk %}" method="POST"> {% csrf_token %}
+            {{reply_form|crispy}}
+            <input type="submit" class="btn btn-primary" value="Reply">
+          </form>
+        </div>
       </div>
-    </div>
-  </ul>
+    </ul>
+</div>  
   <!-- if comment is not yet approved it will display the following -->
 {% else %}
   <!-- comments will be visiable only to photographer or user who created the comment awaiting approval by photographer. -->
