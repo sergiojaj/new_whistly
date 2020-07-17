@@ -33,12 +33,12 @@
                         {% if bird_detail.photographer == user %}
                           <a href="{% url 'bird_update' pk=bird_detail.pk %}">
                             <button class="btn btn-info bird_detail_btn">
-                              <i class="fas fa-feather-alt"> Edit</i> 
+                              <i class="fas fa-feather-alt"></i> 
                             </button>
                           </a>
                           <a href="{% url 'bird_delete' pk=bird_detail.pk %}">
-                            <button class="btn btn-dark bird_detail_btn">
-                              <i class="fas fa-dove"> Remove</i>
+                            <button class="btn btn-danger bird_detail_btn">
+                              <i class="fas fa-dove"></i>
                             </button>
                           </a>
                         {% endif %}
@@ -46,12 +46,12 @@
                         {% if user != bird_detail.photographer %}
                           <a href="{% url 'seed' pk=bird_detail.pk %}">
                             <button class="btn btn-dark bird_detail_btn">
-                              <i class="fas fa-seedling"> {{bird_detail.seeds.count}} Seeds</i> 
+                              <i class="fas fa-seedling"> {{bird_detail.seeds.count}}</i> 
                             </button>
                           </a>
                         {% else %}
                             <button class="btn btn-dark bird_detail_btn" disabled>
-                              <i class="fas fa-seedling"> {{bird_detail.seeds.count}} Seeds</i> 
+                              {{bird_detail.seeds.count}} <i class="fas fa-seedling"></i> 
                             </button>
                         {% endif %}
                     </div>
