@@ -52,7 +52,7 @@
             {% if user.is_authenticated %}
                 <h3 class="mb-4">To start sharing with our community,</h3> 
                 <h3>simply click the button bellow.</h3>
-                    <a href="#"><button class="btn btn-info home_gallery_btn" style="height: 70px; width: 250px">Feathers UP!</button></a>
+                    <a href="{% url 'add_bird' %}"><button class="btn btn-info home_gallery_btn" style="height: 70px; width: 250px">Feathers UP!</button></a>
             {% else %}
                 <h3>Click 
                         <a href="#">here</a>
