@@ -262,22 +262,25 @@ class Seed_Add_Remove_View(View):
 class SearchResultsListView(LoginRequiredMixin, ListView):
     model = Bird
     template_name = 'search_results.html'
-    context_name = 'bird_list'
     paginate_by = 10
 
     def get_queryset(self):
+        """
+        A reminder that queryset is equals to Model.objects.all()
+        Always add "?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}" in pagination.
+        """
+        queryset = super().get_queryset() # queryset = Birds.objects
         query = self.request.GET.get('q')
-        return Bird.objects.filter(
-             Q(photographer__username__icontains=query)| Q(species__icontains=query)
-             | Q(photographer_comment__icontains=query) | Q(location__icontains=query)
-        )
+        
+        return queryset.filter(
+                Q(photographer__username__icontains=query)| Q(species__icontains=query)
+                | Q(photographer_comment__icontains=query) | Q(location__icontains=query)
+            )
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context["user_search"] = self.request.GET.get('q')
         return context       
-        
-
 
 ###### function based views
 ### hopefuly learn cbvs enough to not need to use these
