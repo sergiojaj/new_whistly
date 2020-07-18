@@ -11,6 +11,7 @@
     
     <hr class="mb-4">
 
+<!-- birds list starts here -->
     <div class="row">
         {% for bird in birds_list %}
             <div class="col-sm-6 col-md-6 col-lg-4 p-3">
@@ -22,32 +23,17 @@
                     <a href="{% url 'profile_detail' pk=bird.photographer.pk %}">
                         <p>Photographer: {{bird.photographer|capfirst}}</p>
                     </a>
-                    <!-- <hr class="bird_gallery_sep mb-2"> -->
                 </div>
             </div>
         {% endfor %}
-        
-        <div class="container">
-            <span class="step-links">
-                {% if page_obj.has_previous %}
-                    <a href="?page=1">&laquo; First</a>
-                    <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
-                {% endif %}
-        
-                <span class="current">
-                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                </span>
-        
-                {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}">Next</a>
-                    <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
-                {% endif %}
-            </span>
-        </div>
-    </div>
+<!-- birds list ends here -->
 
+<!-- pagination start -->
+{% include 'pagination.html' %}
+<!-- pagination end -->
+
+</div>
 </div>
 
 
 {% endblock content %}
-
