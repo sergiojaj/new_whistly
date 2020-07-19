@@ -1,31 +1,54 @@
 {% extends '_base.html' %} {% load crispy_forms_tags %} {% block title %}Whistly
-- Search Page{% endblock title %} {% block content %}
+- Search{% endblock title %} {% block content %}
 
 <div class="container">
   <div class="row">
-    <div class="col-md-12" align="center">
-      <h2 class="mb-3"><i class="fa fa-file-o"></i> Search Result</h2>
-      <h5 class="mb-3">Please find bellow the result of your search</h5>
+    <div class="col-12" align="center">
+      <h3 class="mb-3"><i class="fa fa-file-o"></i> Whistly - Search Results</h3>
+      <p class="">Please find bellow the result of your search</p>
+      <p class="mb-3">or start a new search...</p>
       <form action="{% url 'search_results' %}" method="GET">
         <input
           type="text"
           name="q"
           class="form-control"
           placeholder="eg.: bird species... location... photographer"
-          style="width: 600px;"
-        />
-        <button class="btn btn-info btn-sm" type="button">
+          style="max-width: 600px;"
+        >
+        <button class="btn btn-info" type="button" style="width: auto; height:auto">
           <i class="fa fa-search"></i>
         </button>
       </form>
-      <hr />
-      <p>Showing all results matching <strong>{{user_search}}</strong></p>
+      
+      
+      {% if user_search %}
+        <p>Showing all results matching <strong>{{user_search}}</strong></p>
+      {% endif %}
     </div>
   </div>
 
   <div class="row">
+    {{request.get_full_path}}
+  <div class="container col-12" align=center>
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Order by:
+      </button>
+      <form action="{% url 'search_results' %}" method="GET">
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a name="recent" class="dropdown-item" href="#">Most recent</a>
+          <a name="comment" class="dropdown-item" href="#">Most comments</a>
+          <a name='seed' class="dropdown-item" href="#">Most seeds</a>
+          <a name='photographer' class="dropdown-item" href="#">Photographer</a>
+          <a name='species' class="dropdown-item" href="#">Species</a>
+        </div>
+      </form>
+    </div>
+
+  </div>
+
     <!-- BEGIN ORDER RESULT -->
-    <div class="col-sm-6">
+    <!-- <div class="col-sm-6">
       <div class="btn-group">
         <button
           type="button"
@@ -42,42 +65,35 @@
           <li><a href="#">Nº. Comments</a></li>
         </ul>
       </div>
-    </div>
+    </div> -->
     <!-- END ORDER RESULT -->
 
-    <!-- BEGIN TABLE RESULT -->
-    <div class="table-responsive">
-      <table class="table table-hover">
-        <tbody>
-          {% for result in bird_list %}
-          <tr>
-            <td class="number text-center"></td>
-            <td class="image">
-              <a href="{{ result.get_absolute_url }}">
-                <img
-                  src="{{ result.picture.url }}"
-                  alt=""
-                  style="height: 150px; width: 200px;"
-                />
-              </a>
-            </td>
-            <td class="description">
-              <strong>{{ result.species }}</strong><br />
-              {{result.photographer_comment }}
-            </td>
-            <td class="seeds text-right">
-              <span>
-                <i class="fas fa-seedling"> {{result.seeds.count}}</i>
-              </span>
-            </td>
-            <td class="photographer text-right">{{ result.photographer|capfirst }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    <!-- END TABLE RESULT -->
-  </div>
+    <!-- search starts here -->
+      {% for result in bird_list %}
+        <div class="container">
+          <!-- comments start -->
+          <div class="media mt-3 p-3">
+            <a href="{{ result.get_absolute_url }}">
+              <img class="mr-3 img-thumbnail" src="{{ result.picture.url }}" alt="Generic placeholder image" style="height: 150px; width: 200px;">
+            </a>
+            <div class="media-body">
+              <p class="small float-right">Photographer: {{ result.photographer|capfirst }}</p>
+              <h5 class="mt-0">Species: {{ result.species }}
+                <span class="ml-2">
+                  <i class="fas fa-seedling"></i> 
+                  {{ result.seeds.count }}
+                </span>
+              </h5>
+              {{ result.photographer_comment }}
+            </div>
+          </div>
+          </div>
+      {% endfor %}
+      <!-- search ends here -->
+
+
+</div>
+<!-- main row ends here -->
 </div>
 
 {% include 'pagination.html' %}
