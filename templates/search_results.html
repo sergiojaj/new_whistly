@@ -1,5 +1,10 @@
-{% extends '_base.html' %} {% load crispy_forms_tags %} {% block title %}Whistly
-- Search{% endblock title %} {% block content %}
+{% extends '_base.html' %} 
+{% load crispy_forms_tags %} 
+{% block title %}Whistly - Search{% endblock title %} 
+
+{% block content %}
+
+
 
 <div class="container">
   <div class="row">
@@ -28,21 +33,22 @@
   </div>
 
   <div class="row">
-    {{request.get_full_path}}
-  <div class="container col-12" align=center>
+
+    <div class="container col-12" align=center>
     <div class="dropdown">
       <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Order by:
       </button>
-      <form action="{% url 'search_results' %}" method="GET">
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a name="recent" class="dropdown-item" href="#">Most recent</a>
-          <a name="comment" class="dropdown-item" href="#">Most comments</a>
-          <a name='seed' class="dropdown-item" href="#">Most seeds</a>
-          <a name='photographer' class="dropdown-item" href="#">Photographer</a>
-          <a name='species' class="dropdown-item" href="#">Species</a>
+          <!-- one can build own search criteria and the name order_by serves as a dict new key -->
+          <a class="dropdown-item" href="?q={{ request.GET.q }}&order_by=recent">Most Recent</a>
+          <a class="dropdown-item" href="?q={{ request.GET.q }}&order_by=comment">Most comments</a>
+          <a class="dropdown-item" href="?q={{ request.GET.q }}&order_by=seed">Most seeds</a>
+          <a class="dropdown-item" href="?q={{ request.GET.q }}&order_by=photographer">Photographer</a>
+          <a class="dropdown-item" href="?q={{ request.GET.q }}&order_by=species">Species</a>
         </div>
-      </form>
+      
+      
     </div>
 
   </div>

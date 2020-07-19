@@ -8,7 +8,7 @@ from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model, get_user
 
-from django.db.models import Q
+from django.db.models import Q, Count
 
 from birds.models import Bird, Comment, Reply, Seed
 from birds.forms import CommentForm, ReplyForm
@@ -269,13 +269,34 @@ class SearchResultsListView(LoginRequiredMixin, ListView):
         A reminder that queryset is equals to Model.objects.all()
         Always add "?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}" in pagination.
         """
-        queryset = super().get_queryset() # queryset = Birds.objects
-        query = self.request.GET.get('q')
+        print(self.request.GET)
         
-        return queryset.filter(
+        
+        query = self.request.GET.get('q') # search result
+        order_by = self.request.GET.get('order_by') # order by result
+        queryset = super().get_queryset() # queryset = Birds.objects
+
+
+        # to be fixed
+        if query:
+            queryset = queryset.filter(
                 Q(photographer__username__icontains=query)| Q(species__icontains=query)
                 | Q(photographer_comment__icontains=query) | Q(location__icontains=query)
             )
+            if order_by:
+                queryset = queryset.annotate(num_comment=Count('comments')).order_by('-num_comment')
+            return queryset
+        else:
+            if order_by:
+                queryset = queryset.annotate(num_comment=Count('comments')).order_by('-num_comment')
+
+        return queryset
+        
+        
+        # return queryset.filter(
+        #         Q(photographer__username__icontains=query)| Q(species__icontains=query)
+        #         | Q(photographer_comment__icontains=query) | Q(location__icontains=query)
+        #     )
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
