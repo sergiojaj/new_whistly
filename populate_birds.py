@@ -1,5 +1,6 @@
 # populates birds
 import os
+
 # configuring the default environement 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'whistly_project.settings')
 
@@ -18,27 +19,27 @@ def dummy_birds(n=10):
     Populates the Bird's nest with data.
     """
     
-    many_birds = CustomUser.objects.get(username='many_birds')
+    # many_birds = CustomUser.objects.get(username='many_birds')
 
     for x in range(n):
         
-        # # user = fake.first_name()
-        # pwd = fake.pystr()
-        # email = fake.email()
+        user = fake.first_name()
+        pwd = fake.pystr()
+        email = fake.email()
         
-        # new_user = CustomUser(username='bird_collector',
-        #                     password=pwd,
-        #                     email='bird_collector@email.com')
+        new_user = CustomUser(username=user,
+                            password=pwd,
+                            email=email)
 
-        # new_user.save()
-        
+        new_user.save()
+               
         location = fake.country()
         comment = fake.paragraph()
         species = fake.last_name()
 
         new_bird = Bird(species=species,
                         location=location,
-                        photographer=many_birds,
+                        photographer=new_user,
                         photographer_comment=comment,
                         picture=('test_birds\\' +
                                 random.choice([x for x in os.listdir("media\\test_birds")])))
