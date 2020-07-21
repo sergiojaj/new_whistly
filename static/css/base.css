@@ -1,14 +1,14 @@
 /* general */
 body {
   font-family: 'Caladea', serif;
-  /* background: url("/static/img/background4.jpg");
+  background: url("/static/img/background6.jpg");
   background-size: cover; 
-  color: white; */
+  color: white;
 }
 
 
 .tips-text {
-  color: coral;
+  text-shadow: azure;
 }
 
 
