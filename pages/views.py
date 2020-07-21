@@ -269,9 +269,6 @@ class SearchResultsListView(LoginRequiredMixin, ListView):
         A reminder that queryset is equals to Model.objects.all()
         Always add "?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}" in pagination.
         """
-        print(self.request.GET)
-        
-        
         query = self.request.GET.get('q') # search result
         order_by = self.request.GET.get('order_by') # order by result
         queryset = super().get_queryset() # queryset = Birds.objects
@@ -284,6 +281,7 @@ class SearchResultsListView(LoginRequiredMixin, ListView):
                 | Q(photographer_comment__icontains=query) | Q(location__icontains=query)
             )
         # if order_by link is clicked it will order queryset accordingly
+        # using annotate (hidden Django's jewel)
         if order_by:
             if 'comment' in order_by:
                 queryset = queryset.filter(comments__comment_approved=True).annotate(num_comment=Count('comments')).order_by('-num_comment')
@@ -295,7 +293,6 @@ class SearchResultsListView(LoginRequiredMixin, ListView):
                 queryset = queryset.order_by('photographer__username')
             
         return queryset
-        
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
