@@ -276,27 +276,26 @@ class SearchResultsListView(LoginRequiredMixin, ListView):
         order_by = self.request.GET.get('order_by') # order by result
         queryset = super().get_queryset() # queryset = Birds.objects
 
-
         # to be fixed
+        # if search term is entered it will update the queryset from all to specific
         if query:
             queryset = queryset.filter(
                 Q(photographer__username__icontains=query)| Q(species__icontains=query)
                 | Q(photographer_comment__icontains=query) | Q(location__icontains=query)
             )
-            if order_by:
-                queryset = queryset.annotate(num_comment=Count('comments')).order_by('-num_comment')
-            return queryset
-        else:
-            if order_by:
-                queryset = queryset.annotate(num_comment=Count('comments')).order_by('-num_comment')
-
+        # if order_by link is clicked it will order queryset accordingly
+        if order_by:
+            if 'comment' in order_by:
+                queryset = queryset.filter(comments__comment_approved=True).annotate(num_comment=Count('comments')).order_by('-num_comment')
+            elif 'seed' in order_by:
+                queryset = queryset.annotate(num_seed=Count('seeds')).order_by('-num_seed')
+            elif 'species' in order_by:
+                queryset = queryset.order_by('species')
+            elif 'photographer' in order_by:
+                queryset = queryset.order_by('photographer__username')
+            
         return queryset
         
-        
-        # return queryset.filter(
-        #         Q(photographer__username__icontains=query)| Q(species__icontains=query)
-        #         | Q(photographer_comment__icontains=query) | Q(location__icontains=query)
-        #     )
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)

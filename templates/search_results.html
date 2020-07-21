@@ -41,11 +41,10 @@
       </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <!-- one can build own search criteria and the name order_by serves as a dict new key -->
-          <a class="dropdown-item" href="?q={{ request.GET.q }}&order_by=recent">Most Recent</a>
           <a class="dropdown-item" href="?q={{ request.GET.q }}&order_by=comment">Most comments</a>
           <a class="dropdown-item" href="?q={{ request.GET.q }}&order_by=seed">Most seeds</a>
-          <a class="dropdown-item" href="?q={{ request.GET.q }}&order_by=photographer">Photographer</a>
-          <a class="dropdown-item" href="?q={{ request.GET.q }}&order_by=species">Species</a>
+          <a class="dropdown-item" href="?q={{ request.GET.q }}&order_by=species">Species a-z</a>
+          <a class="dropdown-item" href="?q={{ request.GET.q }}&order_by=photographer">Photographer a-z</a>
         </div>
       
       
