@@ -11,7 +11,7 @@ from django.contrib.auth import get_user_model, get_user
 from django.db.models import Q, Count
 
 from birds.models import Bird, Comment, Reply, Seed
-from birds.forms import CommentForm, ReplyForm
+from birds.forms import CommentForm, ReplyForm, AddBirdForm
 
 # Create your views here.
 #### Basic Views
@@ -174,11 +174,12 @@ class BirdDeleteView(LoginRequiredMixin,DeleteView):
     template_name = 'bird/bird_delete.html'
     success_url = reverse_lazy('birds_nest')
 
-
 class AddBirdCreateView(LoginRequiredMixin,CreateView):
     model = Bird
     template_name = 'bird/add_bird.html'
-    fields = ['species', 'location', 'picture', 'photographer_comment']
+    form_class = AddBirdForm
+    
+    # fields = ['species', 'location', 'picture', 'photographer_comment']
 
     def form_valid(self, form):
         form.instance.photographer = self.request.user

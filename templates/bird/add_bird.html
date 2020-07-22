@@ -5,14 +5,21 @@
 
 {% block content %}
 
-<div class="container mb-4" align=center style="width: 400px;">
-    <h3>Enter details bellow</h3>
-    <p>Make sure to add as much details as possible.</p>
+<!-- <div class="container mb-4" align=center style="width: 400px;"> -->
+    
+<div class="form-group container" align=center style="width: 400px;">
+
     <form method="POST" enctype="multipart/form-data">
+        <h3>Enter details bellow</h3>
+        <p>Make sure to add as much details as possible.</p>
         {% csrf_token %}
-        {{ form|crispy }}
+        {{ form.species|as_crispy_field }}
+        {{ form.location|as_crispy_field }}
+        {{ form.picture }}
+        {{ form.photographer_comment|as_crispy_field }}
         <button type="submit" class="btn btn-primary">Hatch Egg</button>
     </form>
 </div>
+<!-- </div> -->
 
 {% endblock content %}

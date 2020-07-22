@@ -1,5 +1,5 @@
 from django import forms
-from .models import Comment, Reply
+from .models import Bird, Comment, Reply
 
 class CommentForm(forms.ModelForm):
 
@@ -24,3 +24,18 @@ class ReplyForm(forms.ModelForm):
     class Meta:
         model = Reply
         fields = ['reply']
+
+class AddBirdForm(forms.ModelForm):
+    
+    class Meta:
+        model = Bird
+        fields = ('species','location','picture','photographer_comment')
+
+        widgets = {
+                    "species": forms.TextInput(attrs={'class': 'form-control'}),
+                    "location": forms.TextInput(attrs={'class': 'form-control'}),
+                    "picture": forms.FileInput(attrs={"type":"file", "class":"form-control-file"}),
+                    "photographer_comment": forms.Textarea(attrs={'class': 'form-control', "style":"height:80px"})
+                }
+
+    
