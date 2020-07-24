@@ -4,8 +4,6 @@
 
 {% block content %}
 
-
-
 <div class="container">
   <div class="row">
     <div class="col-12" align="center">
@@ -24,8 +22,7 @@
           <i class="fa fa-search"></i>
         </button>
       </form>
-      
-      
+            
       {% if user_search %}
         <p>Showing all results matching <strong>{{user_search}}</strong></p>
       {% endif %}
@@ -46,34 +43,11 @@
           <a class="dropdown-item" href="?q={{ request.GET.q }}&order_by=species">Species a-z</a>
           <a class="dropdown-item" href="?q={{ request.GET.q }}&order_by=photographer">Photographer a-z</a>
         </div>
-      
-      
-    </div>
+   </div>
 
   </div>
 
-    <!-- BEGIN ORDER RESULT -->
-    <!-- <div class="col-sm-6">
-      <div class="btn-group">
-        <button
-          type="button"
-          class="btn btn-default dropdown-toggle"
-          data-toggle="dropdown"
-        >
-          Order by <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" role="menu">
-          <li><a href="#">Species</a></li>
-          <li><a href="#">Most Recent</a></li>
-          <li><a href="#">Photographer</a></li>
-          <li><a href="#">Seeds</a></li>
-          <li><a href="#">Nº. Comments</a></li>
-        </ul>
-      </div>
-    </div> -->
-    <!-- END ORDER RESULT -->
-
-    <!-- search starts here -->
+   <!-- search starts here -->
       {% for result in bird_list %}
         <div class="container">
           <!-- comments start -->
@@ -102,5 +76,5 @@
 </div>
 
 {% include 'pagination.html' %}
-
+{% include 'footer.html' %}
 {% endblock content %}

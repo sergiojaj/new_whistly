@@ -21,6 +21,7 @@ button{
   margin-top: 10px;
 }
 
+
 /* base */
 #base_h1{
   font-size: 60px;
@@ -155,4 +156,10 @@ button{
   width: 100px;
   height: auto;
 
+}
+
+/* remove account */
+.remove_account_form{
+  display: inline;
+  margin-right: 5px;
 }

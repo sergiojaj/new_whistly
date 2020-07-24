@@ -34,6 +34,16 @@
               Edit Info
             </button>
           </a>
+          <a href="{% url 'account_reset_password' %}">
+            <button class="btn btn-info profile_btn">
+              Reset password
+            </button>
+          </a>
+          <a href="{% url 'account_change_password' %}">
+            <button class="btn btn-light profile_btn">
+              Change password
+            </button>
+          </a>
           <a href="{% url 'remove_account' pk=profile.pk %}">
             <button class="btn btn-danger profile_btn">
               Remove account
@@ -76,4 +86,5 @@
 
 {% include 'pagination.html' %}
 </div>
+{% include 'footer.html' %}
 {% endblock content %}
