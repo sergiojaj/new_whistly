@@ -8,6 +8,8 @@ from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model, get_user
 
+from allauth.account.views import PasswordChangeView
+
 from django.db.models import Q, Count
 
 from birds.models import Bird, Comment, Reply, Seed
@@ -35,6 +37,12 @@ class ProfileUpdateView(LoginRequiredMixin,UpdateView):
     model = get_user_model()
     template_name = 'profile/profile_edit.html'
     fields = ('profile_picture', 'about_user',)
+
+class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
+    """
+    Had to overwrite allauth success_url 
+    """
+    success_url = '/'
     
 ##### Bird App related Views
 
@@ -44,7 +52,6 @@ class BirdsNestListView(ListView):
     context_object_name = 'birds_list'
     # pagination is easy
     paginate_by = 9
-
 
 class BirdDetailView(LoginRequiredMixin, DetailView):
     model = Bird

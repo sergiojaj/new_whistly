@@ -5,6 +5,7 @@ from .views import (HomeTemplateView, RemoveAccountDeleteView,
                     AddBirdCreateView, BirdsNestListView, BirdUpdateView, BirdDeleteView,BirdDetailSimpleView,
                     EditCommentUpdateView, EditReplyUpdateView,
                     Seed_Add_Remove_View, SearchResultsListView,
+                    CustomPasswordChangeView,
                     )
 # func based views
 from .views import approve_comment, remove_comment, approve_reply, remove_reply
@@ -17,6 +18,7 @@ urlpatterns = [
     #profile urls
     path('user_profile/<uuid:pk>/edit/', ProfileUpdateView.as_view(), name='edit_profile'),
     path('user_profile/<uuid:pk>/', ProfileDetailView.as_view(), name='profile_detail'),
+    path('accounts/password/change/', CustomPasswordChangeView.as_view(), name='account_change_password'),
 
     #bird urls
     path('feathers_up/', AddBirdCreateView.as_view(), name='add_bird'),
