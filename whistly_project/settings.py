@@ -239,6 +239,9 @@ AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
 AWS_S3_CUSTOM_DOMAIN = os.environ.get('AWS_S3_CUSTOM_DOMAIN')
 AWS_DEFAULT_ACL = None
 
+#add the media storage configurations to the settings.py
+DEFAULT_FILE_STORAGE = 'whistly_project.storage_backends.MediaStorage'
+
 AWS_LOCATION = 'static'
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
