@@ -20,7 +20,7 @@ from django.conf import settings
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('control-room/', admin.site.urls),
     #local
     path('', include('pages.urls')),
     #authentication
