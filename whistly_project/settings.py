@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'debug_toolbar',
     # aws related
-    'main.apps.MainConfig',
     'storages',
 
     #local
