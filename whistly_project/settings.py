@@ -16,6 +16,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # this var comes from docker-compose.yml
 ENVIRONMENT = os.environ.get('ENVIRONMENT', default='production')
+print(ENVIRONMENT)
 
 
 # Quick-start development settings - unsuitable for production
@@ -215,16 +216,15 @@ if ENVIRONMENT == 'production':
     # Heroku secure_proxy_ssl_header error
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-    # Heroku
-    # using the dj-database-url will automatically use the 
-    # postgres database we later set up on Heroku
+# Heroku
+# using the dj-database-url will automatically use the 
+# postgres database we later set up on Heroku
     import dj_database_url
     db_from_env = dj_database_url.config(conn_max_age=600)
     DATABASES['default'].update(db_from_env)
 
-    # Static files (CSS, JavaScript, Images)
-    # Settings for the AWS static files access
-
+# Static files (CSS, JavaScript, Images)
+# Settings for the AWS static files access
     AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
     AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_KEY')
 
@@ -243,7 +243,6 @@ if ENVIRONMENT == 'production':
     STATICFILES_DIRS = [
         os.path.join(BASE_DIR, 'static'),
     ]
-
 
 # Generate min 50 char key
 # go on to the shell import:
