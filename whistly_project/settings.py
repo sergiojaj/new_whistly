@@ -27,7 +27,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = int(os.environ.get('DEBUG', default=0))
 
-ALLOWED_HOSTS = ['.herokuapp.com','localhost','127.0.0.1']
+ALLOWED_HOSTS = ['whistly-project.herokuapp.com','localhost','127.0.0.1']
 
 
 # Application definition
@@ -210,6 +210,8 @@ if ENVIRONMENT == 'production':
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_REFERRER_POLICY = 'same-origin'
+    # Heroku secure_proxy_ssl_header error
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Generate min 50 char key
 # go on to the shell import:
@@ -218,6 +220,8 @@ if ENVIRONMENT == 'production':
 # combine keys (escape $$ if needed)
 
 # Heroku
+# using the dj-database-url will automatically use the 
+# postgres database we later set up on Heroku
 import dj_database_url
 db_from_env = dj_database_url.config(conn_max_age=600)
 DATABASES['default'].update(db_from_env)
