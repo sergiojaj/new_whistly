@@ -17,4 +17,4 @@
 - Bootstrap4
 - Javascript
 - Deployed at Heroku
-- Static Files and User Uploaded Mediai assets using AWS S3 Bucket
+- Static Files and User Uploaded Media assets handled by AWS S3 Bucket
