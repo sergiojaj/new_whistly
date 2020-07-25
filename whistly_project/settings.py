@@ -204,7 +204,7 @@ if ENVIRONMENT == 'production':
 # CLICKJACKING Protection
     X_FRAME_OPTIONS = 'DENY'
 # HTTPS instead of HTTP
-    # SECURE_SSL_REDIRECT = True
+    SECURE_SSL_REDIRECT = True
 # HSTS
     SECURE_HSTS_SECONDS = 3600
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
@@ -212,7 +212,7 @@ if ENVIRONMENT == 'production':
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    # SECURE_REFERRER_POLICY = 'same-origin'
+    SECURE_REFERRER_POLICY = 'same-origin'
     # Heroku secure_proxy_ssl_header error
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
