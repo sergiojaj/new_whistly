@@ -192,3 +192,7 @@ ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
 import socket
 hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
 INTERNAL_IPS = [ip[:-1] + '1' for ip in ips]
+
+# X-XSS-Protection
+if ENVIRONMENT == 'production':
+    SECURE_BROWSER_XSS_FILTER = True
