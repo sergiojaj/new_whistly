@@ -196,12 +196,13 @@ INTERNAL_IPS = [ip[:-1] + '1' for ip in ips]
 
 ###### DEPLOYMENT SECURITY RELATED 
 if ENVIRONMENT == 'production':
+    print(ENVIRONMENT)
 # X-XSS-Protection
     SECURE_BROWSER_XSS_FILTER = True
 # CLICKJACKING Protection
     X_FRAME_OPTIONS = 'DENY'
 # HTTPS instead of HTTP
-    SECURE_SSL_REDIRECT = True
+    # SECURE_SSL_REDIRECT = True
 # HSTS
     SECURE_HSTS_SECONDS = 3600
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
