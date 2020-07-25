@@ -22,7 +22,7 @@ button{
 }
 
 
-/* base */
+/*              base                 */
 #base_h1{
   font-size: 60px;
 }
@@ -45,7 +45,7 @@ button{
 
 
 
-/* profile detail*/
+/*                profile detail                 */
 .profile_picture {
   height: 100px; 
   width: auto;
@@ -86,25 +86,24 @@ button{
   border: 3px solid black;
 }
 
+/*                 remove account           */
+.remove_account_form{
+  display: inline;
+  margin-right: 5px;
+}
 
 /* bird's nest */
 
-.bird_nest_img_container{
-  height: 600px;
-}
-
-.bird_nest_image {
-  height: auto;
-  max-height: 100%;
-  width: auto;
+.bird_thumbnail{
+  height: 250px; 
+  width: 330px;
   max-width: 100%;
   box-shadow: 0 1px 3px rgba(0,0,30,.3);
   background: linear-gradient(45deg,#efefef 25%,transparent 0,transparent 75%,#efefef 0,#efefef),linear-gradient(45deg,#efefef 25%,transparent 0,transparent 75%,#efefef 0,#efefef);
 }
 
+/*               bird_details                  */
 
-
-/* bird_details */
 .bird_detail_btn{
   width: 100px;
   margin-top: 20px;
@@ -127,7 +126,7 @@ button{
   zoom: 2;  
   display: block;
   margin: auto;
-  height: auto;
+  height: 100%;
   max-height: 700px;
   min-height: 400px;
   width: auto;
@@ -156,10 +155,4 @@ button{
   width: 100px;
   height: auto;
 
-}
-
-/* remove account */
-.remove_account_form{
-  display: inline;
-  margin-right: 5px;
 }
