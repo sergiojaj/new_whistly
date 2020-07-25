@@ -47,6 +47,9 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'debug_toolbar',
+    # aws related
+    'main.apps.MainConfig',
+    'storages',
 
     #local
     'users.apps.UsersConfig',
@@ -225,3 +228,21 @@ if ENVIRONMENT == 'production':
 import dj_database_url
 db_from_env = dj_database_url.config(conn_max_age=600)
 DATABASES['default'].update(db_from_env)
+
+# Static files (CSS, JavaScript, Images)
+# Settings for the AWS static files access
+
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_CUSTOM_DOMAIN = os.environ.get('AWS_S3_CUSTOM_DOMAIN')
+
+AWS_LOCATION = 'static'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
