@@ -14,6 +14,8 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# this var comes from docker-compose.yml
+ENVIRONMENT = os.environ.get('ENVIRONMENT', default='production')
 
 
 # Quick-start development settings - unsuitable for production
