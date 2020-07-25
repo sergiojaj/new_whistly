@@ -211,3 +211,9 @@ if ENVIRONMENT == 'production':
     CSRF_COOKIE_SECURE = True
     SECURE_REFERRER_POLICY = 'same-origin'
 
+# Generate min 50 char key
+# go on to the shell import:
+# from django.core.management.utils import get_random_secret_key
+# secret_key()
+# combine keys (escape $$ if needed)
+
