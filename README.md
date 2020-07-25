@@ -16,3 +16,5 @@
 - css3
 - Bootstrap4
 - Javascript
+- Deployed at Heroku
+- Static Files and User Uploaded Mediai assets using AWS S3 Bucket
