@@ -25,9 +25,16 @@ def dummy_birds_multiply_users(n=10):
         user = fake.first_name()
         pwd = fake.pystr()
         email = fake.email()
-        new_user = CustomUser(username=user,
+        try:
+            new_user = CustomUser(username=user,
                             password=pwd,
                             email=email)
+        except:
+            user = fake.first_name()
+            new_user = CustomUser(username=user,
+                            password=pwd,
+                            email=email)
+
         new_user.save()
         location = fake.country()
         comment = fake.paragraph()
@@ -71,7 +78,7 @@ def dummy_birds_single_user(n=10):
 if __name__ == "__main__":
     print('Creating New Users and saving new birds!')
     # for single users with 1 bird each
-    # dummy_birds_multiply_users(20)
+    dummy_birds_multiply_users(20)
     # for single user with multiple birds
-    dummy_birds_single_user(5)
+    # dummy_birds_single_user(5)
     print('Process completed')
