@@ -222,7 +222,6 @@ if ENVIRONMENT == 'production':
     import dj_database_url
     db_from_env = dj_database_url.config(conn_max_age=600)
     DATABASES['default'].update(db_from_env)
-    django_heroku.settings(locals(), logging=False)
 
 # Static files (CSS, JavaScript, Images)
 # Settings for the AWS static files access
@@ -250,22 +249,33 @@ if ENVIRONMENT == 'production':
         'version': 1,
         'disable_existing_loggers': False,
         'formatters': {
-            'console': {
-                'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
+            'verbose': {
+                'format': ('%(asctime)s [%(process)d] [%(levelname)s] ' +
+                        'pathname=%(pathname)s lineno=%(lineno)s ' +
+                        'funcname=%(funcName)s %(message)s'),
+                'datefmt': '%Y-%m-%d %H:%M:%S'
             },
+            'simple': {
+                'format': '%(levelname)s %(message)s'
+            }
         },
         'handlers': {
-            'console': {
-                'level': 'WARNING',
-                'class': 'logging.StreamHandler',
-                'formatter': 'console'
+            'null': {
+                'level': 'DEBUG',
+                'class': 'logging.NullHandler',
             },
+            'console': {
+                'level': 'DEBUG',
+                'class': 'logging.StreamHandler',
+                'formatter': 'verbose'
+            }
         },
         'loggers': {
-            'django': {
+            'testlogger': {
                 'handlers': ['console'],
-            },
-        },
+                'level': 'INFO',
+            }
+        }
     }
     logging.config.dictConfig(LOGGING)
 
