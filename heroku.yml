@@ -7,6 +7,6 @@ build:
 release:
     image: web
     command:
-        - python manage.py collectstatic --noinput
+        - python manage.py collectstatic --noinput --log-file '-'
 run:
     web: gunicorn whistly_project.wsgi
