@@ -249,21 +249,20 @@ if ENVIRONMENT == 'production':
         'version': 1,
         'disable_existing_loggers': False,
         'formatters': {
-            'file': {
+            'console': {
                 'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
             },
         },
         'handlers': {
-            'file': {
+            'console': {
                 'level': 'WARNING',
-                'class': 'logging.FileHandler',
-                'filename': 'server.log',
-                'formatter': 'file'
+                'class': 'logging.StreamHandler',
+                'formatter': 'console'
             },
         },
         'loggers': {
             'django': {
-                'handlers': ['file'],
+                'handlers': ['console'],
             },
         },
     }
