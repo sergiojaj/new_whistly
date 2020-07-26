@@ -35,5 +35,5 @@ class AddBirdForm(forms.ModelForm):
                     "species": forms.TextInput(attrs={'class': 'form-control'}),
                     "location": forms.TextInput(attrs={'class': 'form-control'}),
                     "picture": forms.FileInput(attrs={"type":"file", "class":"form-control-file"}),
-                    "photographer_comment": forms.Textarea(attrs={'class': 'form-control', "style":"height:80px"})
+                    "photographer_comment": forms.Textarea(attrs={'class': 'form-control', "style":"height:80px mt-2"})
                 }
