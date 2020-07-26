@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-import logging
+import logging.config # it has to be .config as logging is just a directory (config is used to pass in dict type config)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -244,14 +244,21 @@ if ENVIRONMENT == 'production':
         os.path.join(BASE_DIR, 'static'),
     ]
 
+    # logging to catch warning errors in production
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,
+        'formatters': {
+            'file': {
+                'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
+            },
+        },
         'handlers': {
             'file': {
-                'level': 'INFO',
+                'level': 'WARNING',
                 'class': 'logging.FileHandler',
-                'filename': 'server.log'
+                'filename': 'server.log',
+                'formatter': 'file'
             },
         },
         'loggers': {
@@ -260,6 +267,7 @@ if ENVIRONMENT == 'production':
             },
         },
     }
+    logging.config.dictConfig(LOGGING)
 
 # Generate min 50 char key
 # go on to the shell import:
