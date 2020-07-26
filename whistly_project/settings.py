@@ -222,6 +222,7 @@ if ENVIRONMENT == 'production':
     import dj_database_url
     db_from_env = dj_database_url.config(conn_max_age=600)
     DATABASES['default'].update(db_from_env)
+    django_heroku.settings(locals(), logging=False)
 
 # Static files (CSS, JavaScript, Images)
 # Settings for the AWS static files access
