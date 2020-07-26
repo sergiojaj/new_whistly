@@ -9,4 +9,4 @@ release:
     command:
         - python manage.py collectstatic --noinput
 run:
-    web: gunicorn whistly_project.wsgi  --log-file=-
+    web: gunicorn whistly_project.wsgi

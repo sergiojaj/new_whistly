@@ -251,34 +251,20 @@ if ENVIRONMENT == 'production':
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,
-        'formatters': {
-            'verbose': {
-                'format': ('%(asctime)s [%(process)d] [%(levelname)s] ' +
-                        'pathname=%(pathname)s lineno=%(lineno)s ' +
-                        'funcname=%(funcName)s %(message)s'),
-                'datefmt': '%Y-%m-%d %H:%M:%S'
-            },
-            'simple': {
-                'format': '%(levelname)s %(message)s'
-            }
-        },
         'handlers': {
-            'null': {
+            'file': {
                 'level': 'INFO',
-                'class': 'logging.NullHandler',
+                'class': 'logging.FileHandler',
+                'filename': 'server.log',
             },
-            'console': {
-                'level': 'INFO',
-                'class': 'logging.StreamHandler',
-                'formatter': 'verbose'
-            }
         },
         'loggers': {
-            'testlogger': {
-                'handlers': ['console'],
+            'django': {
+                'handlers': ['file'],
                 'level': 'INFO',
-            }
-        }
+                'propagate': True,
+            },
+        },
     }
     logging.config.dictConfig(LOGGING)
 
