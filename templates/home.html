@@ -51,24 +51,19 @@
 
 
       <div class="row">
-        <div class="col">
-          <div class="mb-5 mt-5" align=center>
-              {% if user.is_authenticated %}
-                  <h3 class="mb-4">Start sharing with our community and enjoy!</h3> 
-                      <a href="{% url 'add_bird' %}"><button class="btn btn-info home_gallery_btn" style="height: 70px; width: 250px">Feathers UP!</button></a>
-              {% else %}
-                  <h3>Click 
-                          <a href="#">here</a>
-                          to find out more about our project,</h3>
-                      <h3>or simply sign up with us...</h3>
-                      <a href="{% url 'account_login' %}" class="mr-3"><button class="btn btn-info home_login_btn">Login In</button></a>
-                      <a href="{% url 'account_signup' %}" class="mr-3"><button class="btn btn-info home_signup_btn">Sign Up</button></a>
-              {% endif %}
-          </div>
-
+      {% if user.is_authenticated %}
+        <div class="col-12 mt-3 mb-2" align=center>
+            <h3 class="mb-4">Start sharing with our community and enjoy!</h3> 
+            <a href="{% url 'add_bird' %}"><button class="btn btn-info home_gallery_btn" style="height: 70px; width: 250px">Feathers UP!</button></a>
         </div>
-
-      </div>
+      {% else %}
+         <div class="col-xm-12 col-sm-12" align=center>
+            <h3>To start, just sign up or login with us!</h3>
+            <a href="{% url 'account_login' %}" style="display: inline;"><button class="btn btn-info home_login_btn">Login In</button></a>
+            <a href="{% url 'account_signup' %}"><button class="btn btn-info home_signup_btn">Sign Up</button></a>
+          </div>
+      {% endif %}
+        </div>
     </div>
 
     {% include 'footer.html' %}

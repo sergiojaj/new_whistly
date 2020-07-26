@@ -21,6 +21,8 @@ function myJS(item) {
     console.log(item)
 }
 
-function myFunction() {
-    document.getElementById("demo").innerHTML = "Hello World";
-  }
+// rotate images
+function rotate_image(){
+	var img=document.getElementById('bird_image');
+	img.setAttribute('style','transform:rotate(180deg)');
+}

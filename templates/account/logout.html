@@ -6,7 +6,7 @@
 {% block content %}
 
 
-<div class="container" align=center>
+<div class="container forms" align=center>
     <h2>Log Out</h2>
     <h3 class="mb-3">Are you sure you want to log out?</h3>
     <form action="{% url 'account_logout' %}" method="POST"> {% csrf_token %}

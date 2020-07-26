@@ -157,6 +157,13 @@ button{
   margin-bottom: 30px;
 }
 
+.rotate_btn {
+  width: 40px;
+  height: 40px;
+  margin-top: 10px;
+  margin-right: 20px;
+
+}
 
 .bird_detail_info{
   margin-top: auto;
@@ -191,4 +198,12 @@ button{
   width: 100px;
   height: auto;
 
+}
+
+/* all django forms */
+.forms {
+  max-width: 500px;
+}
+#forms_id {
+  display: inline;
 }

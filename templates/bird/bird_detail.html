@@ -7,14 +7,19 @@
 
 {% block content %}
 <!-- bird picture div -->
-<div class="row p-2">
-  <div class="container">
+<div class="row p-1">
+  <div class="container" align=center>
     <hr class="featurette-divider">
-    <img class="bird_detail_image img-fluid" src="{{bird_detail.picture.url}}" data-src="{holder.js/500x500/auto}" alt="Picture not found">
+    <img id='bird_image' class="bird_detail_image img-fluid" src="{{bird_detail.picture.url}}" data-src="{holder.js/500x500/auto}" alt="Picture not found">
+    {% if bird_detail.photographer == user %}
+          <button class="btn btn-warning rotate_btn" onclick="rotate_image();">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+    {% endif %}
   </div>
 <!-- bird picture div -->
 <!-- bird detailed information div -->
-  <div class="col-12 mt-3 p-3">
+  <div class="col-12 ">
             <hr class="featurette-divider">
                   <div class="row featurette">
                     <div class="col-md-12 order-md-2" align=center>
