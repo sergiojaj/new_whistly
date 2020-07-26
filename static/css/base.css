@@ -33,9 +33,13 @@ body {
 button{
   width: 200px;
   height: 60px;
-  margin-top: 10px;
+  
 }
 
+.btn_navbar {
+  width: 60px; 
+  height: 35px
+}
 
 /*              base                 */
 #base_h1{
