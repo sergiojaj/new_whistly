@@ -74,10 +74,16 @@
       </div>
       {% empty %}
       <div class="col-12 mb-3" style="text-align: center;">
-        <h4>
-          No contributions yet... To start sharing, click
-          <a href="{% url 'add_bird' %}">here</a>
-        </h4>
+        {% if profile == user %}
+          <h4>
+            No contributions yet... To start sharing, click
+            <a href="{% url 'add_bird' %}">here</a>
+          </h4>
+        {% else %}
+          <h4>
+            This user hasn't contributed yet!
+          </h4>
+        {% endif %}
       </div>
       {% endfor %}
     </div>
