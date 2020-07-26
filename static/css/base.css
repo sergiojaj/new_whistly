@@ -169,12 +169,10 @@ button{
 
 
 .bird_detail_image {
-  
   display: block;
   margin: auto;
   height: auto;
   max-height: 600px;
-  min-height: 400px;
   width: auto;
   max-width: 100%;
   box-shadow: 0 1px 3px rgba(0,0,30,.3);
