@@ -24,5 +24,5 @@ function myJS(item) {
 // rotate images
 function rotate_image(){
 	var img=document.getElementById('bird_image');
-	img.setAttribute('style','transform:rotate(180deg)');
+	img.setAttribute('style','transform:rotate(90deg)');
 }

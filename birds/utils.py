@@ -38,3 +38,7 @@ def file_size(value):
     limit = 5242880 # 5 megabytes
     if value.size > limit:
         raise ValidationError('File too large. Size should not exceed 2 MiB')
+
+def rotate_image(image):
+
+    image = Image.open()
