@@ -18,7 +18,7 @@
                     <a href="{{ bird.get_absolute_url }}">
                         <img class="bird_thumbnail" src="{{ bird.picture.url }}" alt="{{ bird.species }}" >
                     </a>
-                <div class="caption">
+                <div class="caption mt-2">
                     <h3>Species: {{bird.species}}</h3>
                     <a href="{% url 'profile_detail' pk=bird.photographer.pk %}">
                         <p>Photographer: {{bird.photographer|capfirst}}</p>
