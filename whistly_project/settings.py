@@ -11,12 +11,12 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import logging
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # this var comes from docker-compose.yml
 ENVIRONMENT = os.environ.get('ENVIRONMENT', default='production')
-print(ENVIRONMENT)
 
 
 # Quick-start development settings - unsuitable for production
@@ -243,6 +243,23 @@ if ENVIRONMENT == 'production':
     STATICFILES_DIRS = [
         os.path.join(BASE_DIR, 'static'),
     ]
+
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'file': {
+                'level': 'INFO',
+                'class': 'logging.FileHandler',
+                'filename': 'server.log'
+            },
+        },
+        'loggers': {
+            'django': {
+                'handlers': ['file'],
+            },
+        },
+    }
 
 # Generate min 50 char key
 # go on to the shell import:
