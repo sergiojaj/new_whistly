@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from django.shortcuts import get_object_or_404, redirect
 
 # to manage uploaded files while still in memory (before saving)
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -66,6 +67,41 @@ class Bird(TimeStampedModel):
         image.save(output, format='JPEG', optimize=True, quality=75)
         output.seek(0)
         self.picture = InMemoryUploadedFile(output, 'ImageField', self.picture.name, 'image/jpeg', output.tell(), None)
+        return super().save(*args, **kwargs)
+    
+    def rotate_right(self, *args, **kwards):
+        """
+        Method to rotate pictures uploaded by users by 90 degrees
+        """
+        original = Image.open(self.picture)
+        rotated = BytesIO()
+        original = original.transpose(Image.ROTATE_90)
+        original.save(rotated, format='JPEG')
+        rotated.seek(0)
+        self.picture = InMemoryUploadedFile(rotated, 'ImageField', self.picture.name, 'image/jpeg', rotated.tell(), None)
+        self.rotate_save()
+        
+        return reverse('bird_detail', kwargs={'pk':self.pk})
+
+    def rotate_left(self, *args, **kwards):
+        """
+        Method to rotate pictures uploaded by users by 270 degrees
+        """
+        original = Image.open(self.picture)
+        rotated = BytesIO()
+        original = original.transpose(Image.ROTATE_270)
+        original.save(rotated, format='JPEG')
+        rotated.seek(0)
+        self.picture = InMemoryUploadedFile(rotated, 'ImageField', self.picture.name, 'image/jpeg', rotated.tell(), None)
+        self.rotate_save()
+        print('this is left')
+        return reverse('bird_detail', kwargs={'pk':self.pk})
+
+    def rotate_save(self, *args, **kwargs):
+        """
+        Save rotated image without changing its quality as the
+        custom method save
+        """
         return super().save(*args, **kwargs)
     
 class Comment(TimeStampedModel):
