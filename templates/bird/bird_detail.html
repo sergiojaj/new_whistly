@@ -10,12 +10,23 @@
 <div class="row p-1">
   <div class="container" align=center>
     <hr class="featurette-divider">
-    <img id='bird_image' class="bird_detail_image img-fluid" src="{{bird_detail.picture.url}}" data-src="{holder.js/500x500/auto}" alt="Picture not found">
-    {% if bird_detail.photographer == user %}
-          <button class="btn btn-warning rotate_btn" onclick="rotate_image();">
-            <i class="fas fa-sync-alt"></i>
+    <div class="col-12">
+      <img id='bird_image' class="bird_detail_image img-fluid" src="{{bird_detail.picture.url}}" data-src="{holder.js/500x500/auto}" alt="Picture not found">
+    </div>
+    <div class="col-12 mt-2">
+      {% if bird_detail.photographer == user %}
+        <a href="?name=rotate-left&pk={{bird_detail.pk}}">
+          <button class="btn btn-warning rotate_btn">
+            <i class="fas fa-redo"></i>
           </button>
-    {% endif %}
+        </a>
+        <a href="?name=rotate-right&pk={{bird_detail.pk}}">
+          <button class="btn btn-warning rotate_btn">
+            <i class="fas fa-undo"></i>
+          </button>
+        </a>
+      {% endif %}
+    </div>
   </div>
   
 <!-- bird picture div -->

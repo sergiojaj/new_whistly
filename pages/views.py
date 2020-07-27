@@ -120,6 +120,17 @@ class BirdDetailSimpleView(LoginRequiredMixin,View):
     
     def get(self, request, *args, **kwargs):
         view = BirdDetailView.as_view()
+        
+        # calls model custom method to rotate image
+        if request.GET.get('name', False):
+            pk = request.GET.get('pk', False)
+            if 'rotate-left' in request.GET.get('name'):
+                bird_obj = get_object_or_404(Bird, pk=pk)
+                bird_obj.rotate_left()
+            elif 'rotate-right' in request.GET.get('name'):
+                bird_obj = get_object_or_404(Bird, pk=pk)
+                bird_obj.rotate_right()
+        
         return view(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
