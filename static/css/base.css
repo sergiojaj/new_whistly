@@ -207,3 +207,7 @@ button{
 #forms_id {
   display: inline;
 }
+
+.remove_account_btns{
+  width: auto;
+}
