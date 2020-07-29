@@ -30,22 +30,22 @@
         {% if profile == user %}
         <div class="mb-3">
           <a href="{% url 'edit_profile' pk=profile.pk %}">
-            <button class="btn btn-primary profile_btn">
+            <button class="btn btn-primary profile_btn m-2">
               Edit Info
             </button>
           </a>
           <a href="{% url 'account_reset_password' %}">
-            <button class="btn btn-info profile_btn">
+            <button class="btn btn-info profile_btn m-2">
               Reset password
             </button>
           </a>
           <a href="{% url 'account_change_password' %}">
-            <button class="btn btn-light profile_btn">
+            <button class="btn btn-light profile_btn m-2">
               Change password
             </button>
           </a>
           <a href="{% url 'remove_account' pk=profile.pk %}">
-            <button class="btn btn-danger profile_btn">
+            <button class="btn btn-danger profile_btn m-2">
               Remove account
             </button>
           </a>
