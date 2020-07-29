@@ -151,7 +151,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 ################################# authentication settings
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = 'birds_nest'
 LOGOUT_REDIRECT_URL = 'account_login'
 LOGIN_URL = 'account_login'
 DEFAULT_FROM_EMAIL = 'admin@whistlyproject.com'
