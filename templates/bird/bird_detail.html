@@ -57,11 +57,9 @@
                         {% endif %}
                         <!-- seed button only for users other than photographer -->
                         {% if user != bird_detail.photographer %}
-                          <a href="{% url 'seed' pk=bird_detail.pk %}">
-                            <button class="btn btn-dark bird_detail_btn">
-                              <i class="fas fa-seedling"> {{bird_detail.seeds.count}}</i> 
+                            <button class="btn btn-dark bird_detail_btn" id="seed" data-pk="{{bird_detail.pk}}">
+                              <i class="fas fa-seedling" id="seed_ico"> {{bird_detail.seeds.count}}</i> 
                             </button>
-                          </a>
                         {% else %}
                             <button class="btn btn-dark bird_detail_btn" disabled>
                               {{bird_detail.seeds.count}} <i class="fas fa-seedling"></i> 
@@ -82,7 +80,7 @@
         <div class="media-body">
           <h5 class="mt-0 font-weight-bold blue-text">Add a comment:</h5>
           <div class="form-group basic-textarea rounded-corners">
-            <form method="POST">
+            <form method="POST" id="comment_form">
               {% csrf_token %}
               {{ comment_form|crispy }}
               <input type="submit" class="btn btn-primary" value="Send your nice comment!">
