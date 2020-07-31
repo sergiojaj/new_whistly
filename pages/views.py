@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
+from django.http import JsonResponse
 
 from django.views.generic import TemplateView, ListView, DetailView, FormView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormMixin
@@ -256,7 +257,9 @@ class EditReplyUpdateView(LoginRequiredMixin,UpdateView):
 
 class Seed_Add_Remove_View(View):
     def get(self, request, *args, **kwargs):
-        bird = get_object_or_404(Bird, pk=kwargs['pk'])
+        pk = self.request.GET.get('pk', False)
+        bird = get_object_or_404(Bird, pk=pk)
+        
         seeded = Seed.objects.values_list('seeded').filter(
                                                 seeder__username=request.user).filter(
                                                     bird__species=bird.species)
@@ -265,15 +268,21 @@ class Seed_Add_Remove_View(View):
                                         seeder__username=self.request.user).filter(
                                         bird__species=bird.species)
             seed.delete()
-            return redirect('bird_detail', pk=bird.pk)
         else:
             seed = Seed()
             seed.seeded = True
             seed.bird = bird
             seed.seeder = self.request.user
             seed.save()
+
+        if self.request.is_ajax():
+            data = {
+                "count": bird.seeds.count()
+            }
+            return JsonResponse(data)
+        else:
             return redirect('bird_detail', pk=bird.pk)
-        return super().get(request, *args, **kwargs)
+        
 
 
 ##### search
