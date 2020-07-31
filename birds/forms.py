@@ -3,9 +3,12 @@ from .models import Bird, Comment, Reply
 
 class CommentForm(forms.ModelForm):
 
-    comment = forms.CharField(widget=forms.Textarea(
-        attrs={'rows':5, 
-        'placeholder':'Enter a beautiful comment here!'}
+    comment = forms.CharField(
+        widget=forms.Textarea(
+                                attrs={
+                                    'rows':5, 
+                                    'placeholder':'Enter a beautiful comment here!', 
+                                    'id':'comment-text'}
     ), 
                                 help_text='The max lenght is 600 characters.',
                                 max_length=600,)
