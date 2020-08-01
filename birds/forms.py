@@ -3,30 +3,29 @@ from .models import Bird, Comment, Reply
 
 class CommentForm(forms.ModelForm):
 
-    comment = forms.CharField(
-        widget=forms.Textarea(
-                                attrs={
-                                    'rows':5, 
-                                    'placeholder':'Enter a beautiful comment here!', 
-                                    'id':'comment-text'}
-    ), 
-                                help_text='The max lenght is 600 characters.',
-                                max_length=600,)
-    
     class Meta:
         model = Comment
         fields = ['comment']
-
+        widgets = {
+            'comment': forms.Textarea(
+                attrs={
+                        'rows':5, 
+                        'placeholder':'Enter a beautiful comment here!', 
+                        'id':'comment-text'},
+                        )}
+                
 class ReplyForm(forms.ModelForm):
-
-    reply = forms.CharField(widget=forms.Textarea(
-        attrs={'rows':3, 
-        'placeholder':'Enter a reply here!'}
-    ), max_length=600,)
-
+    
     class Meta:
+
         model = Reply
-        fields = ['reply']
+        fields = ('reply',)
+        widgets = {
+            
+                'reply': forms.TextInput(attrs={
+                    'rows':3,
+                    'placeholder': 
+                    'Enter a reply here!'})}
 
 class AddBirdForm(forms.ModelForm):
     

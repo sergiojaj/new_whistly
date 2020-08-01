@@ -15,11 +15,10 @@
     </div>
     <div class="col-12 mt-2">
       {% if bird_detail.photographer == user %}
-        <a href="?name=rotate-left&pk={{bird_detail.pk}}">
-          <button class="btn btn-warning rotate_btn">
-            <i class="fas fa-redo"></i>
-          </button>
-        </a>
+
+        <button class="btn btn-warning rotate_btn" id="rotate_left" data-pk="{{bird_detail.pk}}">
+          <i class="fas fa-redo"></i>
+        </button>          
         <a href="?name=rotate-right&pk={{bird_detail.pk}}">
           <button class="btn btn-warning rotate_btn">
             <i class="fas fa-undo"></i>
@@ -80,7 +79,7 @@
         <div class="media-body">
           <h5 class="mt-0 font-weight-bold blue-text">Add a comment:</h5>
           <div class="form-group basic-textarea rounded-corners">
-            <form method="POST" id="comment_form">
+            <form method="POST" id="comment_form" action="." data-pk="{{bird_detail.pk}}">
               {% csrf_token %}
               {{ comment_form|crispy }}
               <input type="submit" class="btn btn-primary" value="Send your nice comment!">
@@ -89,211 +88,10 @@
         </div>
   </div>
 </div>
-<!-- comments and replies -->
-<div class="container">
-<!-- will be displayed if there are comments linked to the bird -->
-{% for comment in bird_detail.comments.all %}
-  {% if comment.comment_approved %}
-    <!-- load approved comments -->
-    <!-- comments start -->
-  <div class="media mt-3 p-3" style="background-color:{% cycle '#faf8f7' '#e1e9f5' '#e6e1f5' '#fffad4' %}; border-radius: 5%">
-    <a href="{% url 'profile_detail' pk=comment.comment_creator.pk %}">
-      <img class="d-flex rounded-circle avatar z-depth-1-half mr-3 comment_picture_size" src="{{ comment.comment_creator.profile_picture.url }}"
-          alt="Avatar"></a>
-    <div class="media-body">
-      <p class="small float-right">Edited at: {{ comment.modified }}</p>
-      <h5 class="mt-0">{{ comment.comment_creator.username|capfirst }}</h5>
-            {{ comment.comment }}
-          <!-- comments btns -->
-          <div class="row justify-content-center mt-2">
-            {% if user == bird_detail.photographer or user == comment.comment_creator %}
-                  <div class="mb-1 mx-1">
-                    <a href="{% url 'comment_removed' pk=comment.pk %}">
-                      <button class="comment_box_btn btn btn-danger" ><i class="far fa-trash-alt"></i></button>
-                    </a>
-                  </div>
-            {% endif %}
-            {% if user == comment.comment_creator %}
-                  <div class="mb-1 mx-1">
-                    <a href="{% url 'comment_edit' pk=comment.pk %}">
-                     <button class="comment_box_btn btn btn-secondary"><i class="far fa-edit"></i></button>
-                    </a>
-                  </div>
-            {% endif %}
-            <div class="mb-1 mx-1">
-              <button class="btn btn-info comment_box_btn" onclick="myFunc('{{ comment.pk }}')"><i class="far fa-comment-dots"></i></button>
-            </div>
-          </div>
-          <!-- ends comments btns -->
-    </div>
-  </div>
-  <!-- comments end -->
-  <hr>
-  <!-- reply text box that is displayed/hidden per reply btn click -->
-  <div id='{{comment.pk}}' style="display: none;">
-    <ul class="ml-3">
-        <div class="media mt-3">
-          <a href="{% url 'profile_detail' pk=comment.comment_creator.pk %}">
-            <img class="d-flex rounded-circle avatar z-depth-1-half mr-3 comment_picture_size" src="{{ user.profile_picture.url }}"
-            alt="Avatar">
-          </a>
-          <div class="media-body">
-          <h5 class="mt-0 font-weight-bold blue-text">{{user.username|capfirst}}
-            </h5>
-            <form align=center action="{% url 'bird_detail' pk=comment.pk %}" method="POST"> {% csrf_token %}
-              {{reply_form|crispy}}
-              <input type="submit" class="btn btn-primary" value="Reply">
-            </form>
-          </div>
-        </div>
-      </ul>
-  </div>  
 
-    <!-- loading the replies -->
-{% for reply in comment.replies.all %}
-  {% if reply.reply_approved %}
-  <!-- load approved replies -->
-  <!-- replies start -->
-  <div class="media ml-5 p-3" style="background-color:{% cycle '#fffad4' '#ffe6d4' '#faf8f7' '#e1e9f5' '#fffad4' %}; border-radius: 5%">
-      <img class="d-flex rounded-circle avatar z-depth-1-half mr-3 comment_picture_size" src="{{ reply.reply_creator.profile_picture.url }}"
-      alt="Avatar"></a>
-    <div class="media-body">
-      <p class="small float-right">Edited at: {{ comment.modified }}</p>
-      <h5 class="mt-0">{{reply.reply_creator|capfirst}}</h5>
-          {{reply.reply}}
-          <!-- comments btns -->
-          <div class="row justify-content-center mt-2">
-          {% if user == bird_detail.photographer or user == reply.reply_creator %}
-              <div class="mr-2 ml-2 mb-1">
-                <a href="{% url 'reply_removed' pk=reply.pk %}">
-                  <button class="comment_box_btn btn btn-danger">
-                    <i class="far fa-trash-alt"></i>
-                  </button>
-                </a>
-              </div>
-          {% endif %}
-          {% if user == reply.reply_creator %}
-              <div class="mb-1">
-                <a href="{% url 'reply_edit' pk=reply.pk %}">
-                  <button class="comment_box_btn btn btn-secondary">
-                    <i class="far fa-edit"></i>
-                  </button>
-                </a>
-              </div>
-          {% endif %} 
+<div class="main-comment-body">
+  {% include 'bird/comments_replies.html' %}
 
-          </div>
-          <!-- ends comments btns -->
-    </div>
-  </div>
-  <!-- replies end -->
-  <hr>
-{% else %}
-<!-- loads replies not yet approved visible only to photograher and reply creator -->
-  {% if user == bird_detail.photographer or user == reply.reply_creator %}
-  <!-- replies start -->
-    <div class="media ml-5 p-3" style="background-color:{% cycle '#fffad4' '#ffe6d4' '#faf8f7' '#e1e9f5' '#fffad4' %}; border-radius: 5%">
-          <img class="d-flex rounded-circle avatar z-depth-1-half mr-3 comment_picture_size" src="{{ reply.reply_creator.profile_picture.url }}"
-          alt="Avatar"></a>
-        <div class="media-body">
-          <p class="small float-right">Edited at: {{ comment.modified }}</p>
-          <h5 class="mt-0">{{reply.reply_creator|capfirst}}</h5>
-              <p class="small">Reply pending approval</p>
-              {{reply.reply}}
-              <!-- comments btns -->
-              <div class="row justify-content-center mt-2">
-              {% if user == bird_detail.photographer %}
-                <div class="mb-1">
-                  <a href="{% url 'reply_approved' pk=reply.pk %}">
-                  <button class="comment_box_btn btn btn-primary">
-                    <i class="fas fa-check"></i>
-                  </button>
-                  </a>
-                </div>
-              {% endif %}
-              {% if user == bird_detail.photographer or user == reply.reply_creator %}
-                <div class="mr-2 ml-2 mb-1">
-                  <a href="{% url 'reply_removed' pk=reply.pk %}">
-                    <button class="comment_box_btn btn btn-danger">
-                      <i class="far fa-trash-alt"></i>
-                    </button>
-                  </a>
-                </div>
-              {% endif %}
-              {% if user == reply.reply_creator %}
-              <div class="mb-1">
-                <a href="{% url 'reply_edit' pk=reply.pk %}">
-                  <button class="comment_box_btn btn btn-secondary">
-                    <i class="far fa-edit"></i>
-                  </button>
-                </a>
-              </div>
-              {% endif %} 
-              </div>
-              <!-- ends comments btns -->
-      </div>
-   </div>
-<!-- replies end -->
-<hr>
-  {% endif %}
-  <!-- if condition for not approved replies ends here -->
-{% endif %}
-<!-- closes replies forloop -->
-{% endfor %}
-<!-- still inside comment's forloop -->
-<!-- loads reply textarea to add replies for all comments -->
-  <!-- if comment is not yet approved it will display the following -->
-{% else %}
-  <!-- comments will be visiable only to photographer or user who created the comment awaiting approval by photographer. -->
-    {% if user == bird_detail.photographer or user == comment.comment_creator %}
-    <!-- comments start -->
-    <div class="media mt-3 p-3" style="background-color:{% cycle '#faf8f7' '#e1e9f5' '#e6e1f5' '#fffad4' %}; border-radius: 5%">
-      <a href="{% url 'profile_detail' pk=comment.comment_creator.pk %}">
-        <img class="d-flex rounded-circle avatar z-depth-1-half mr-3 comment_picture_size" src="{{ comment.comment_creator.profile_picture.url }}"
-            alt="Avatar"></a>
-      <div class="media-body">
-        <p class="small float-right">Edited at: {{ comment.modified }}</p>
-        <h5 class="mt-0">{{ comment.comment_creator.username|capfirst }}</h5>
-        <p class="small">Comment pending approval</p>  
-            {{ comment.comment }}
-            <!-- comments btns -->
-            <div class="row justify-content-center mt-2">
-              {% if user == bird_detail.photographer %}
-                  <div class="mb-1">
-                    <a href="{% url 'comment_approved' pk=comment.pk %}">
-                      <button class="comment_box_btn btn btn-primary">
-                        <i class="fas fa-check"></i>
-                      </button>
-                    </a>
-                  </div>
-              {% endif %}
-              {% if user == bird_detail.photographer or user == comment.comment_creator %}
-              <div class="mb-1 mx-1">
-                <a href="{% url 'comment_removed' pk=comment.pk %}">
-                  <button class="comment_box_btn btn btn-danger" ><i class="far fa-trash-alt"></i></button>
-                </a>
-              </div>
-              {% endif %}
-              {% if user == comment.comment_creator %}
-              <div class="mb-1 mx-1">
-                <a href="{% url 'comment_edit' pk=comment.pk %}">
-                 <button class="comment_box_btn btn btn-secondary"><i class="far fa-edit"></i></button>
-                </a>
-              </div>
-              {% endif %}
-            </div>
-            <!-- ends comments btns -->
-      </div>
-    </div>
-    <!-- comments end -->
-    <hr>
-  {% endif %}
-{% endif %}
-<!-- end of comments forloop -->
-{% endfor %}
-<!-- ends comment container div -->
-</div>
-<!-- row ends here -->
 </div>
 
 {% endblock content %}

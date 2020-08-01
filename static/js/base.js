@@ -44,7 +44,6 @@ $(document).ready(function(){
             })
         })
     function success_func(data){
-        console.log(data)
         $('#seed_ico').text(' '+ data['count'])
     }
     
@@ -55,47 +54,119 @@ $(document).ready(function(){
     } 
 })
 
+/////////////////////////////
 
+// rotate pictures ajax
+
+$('document').ready(function(){
+    $('#rotate_left').on('click', function(){
+        $.ajax(
+            {
+                url : '',
+                type: 'GET',
+                data : {
+                    pk : $(this).attr('data-pk'),
+                    direction : 'left'
+                },
+                success: success_rotate_left,
+                error: error_rotate_left
+            })
+    })
+
+    function success_rotate_left(){
+        $('#bird_image').css({
+            "-webkit-transform": "rotate(-270deg)",
+            "-moz-transform": "rotate(-270deg)",
+            "transform": "rotate(-270deg)"
+        });
+
+    };
+    function error_rotate_left(jqXHR, textStatus, errorThrown){
+        console.log(jqXHR)
+        console.log(textStatus)
+        console.log(errorThrown)
+    }
+})
     
 
 
 
 // comment form
-$('#comment_form').on('submit', function(event){
-    event.preventDefault();
-    console.log("form submitted!")
-    var pk;
-    pk = $(this).attr("data-pk");
-    console.log(pk)
-    create_comment()
-});
+
+// $('document').ready(function(){
+//     $('#comment_form').on('submit', function(event){
+//         event.preventDefault();
+//         comment = $('#comment-text').val(),
+//         console.log(comment)
+//         $.ajax({
+//             type : 'POST',
+//             url : $(this).attr('action'),
+//             dataType: 'json',
+//             data : {
+//                 comment : $('#comment-text').val(),
+//                 pk : $(this).attr('data-pk')
+//             },
+//             success: success_comment,
+//             error: error_comment,
+//         })
+//     })
+
+//     function success_comment(){
+//         $('#comment-text').val('')
+//     }
+
+//     function error_comment(jqXHR, textStatus, errorThrown){
+//         console.log(jqXHR)
+//         console.log(textStatus)
+//         console.log(errorThrown)
+//     }
+// })
 
 
 
-function create_comment() {
-    console.log('create comment is working')  // sanity check
 
-    $.ajax(
-        {
-            url : "",
-            type : "POST",
-            data : { 
-                comment_text : $('#comment-text').val(),
-            },
-        // hands a successful response
-            success : function(json) {
-                $('#comment-text').val('');
-                console.log(json);
-                console.log('success');
-        },
-            // handle a error response
-            error : function(xhr,errmsg,err) {
-                $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
-                    " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
-                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-            }
+
+
+
+
+
+
+
+// $('#comment_form').on('submit', function(event){
+//     event.preventDefault();
+//     console.log("form submitted!")
+//     var pk;
+//     pk = $(this).attr("data-pk");
+//     console.log(pk)
+//     create_comment()
+// });
+
+
+
+// function create_comment() {
+//     console.log('create comment is working')  // sanity check
+
+//     $.ajax(
+//         {
+//             url : "",
+//             type : "POST",
+//             data : { 
+//                 comment_text : $('#comment-text').val(),
+//             },
+//         // hands a successful response
+//             success : function(json) {
+//                 $('#comment-text').val('');
+//                 console.log(json);
+//                 console.log('success');
+//         },
+//             // handle a error response
+//             error : function(xhr,errmsg,err) {
+//                 $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+//                     " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+//                 console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+//             }
 
         
-        }
-    )
-}
+//         }
+//     )
+// }
