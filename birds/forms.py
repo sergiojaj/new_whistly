@@ -23,9 +23,11 @@ class ReplyForm(forms.ModelForm):
         widgets = {
             
                 'reply': forms.TextInput(attrs={
-                    'rows':3,
-                    'placeholder': 
-                    'Enter a reply here!'})}
+                    'rows': 3,
+                    'placeholder': 'Enter a reply here!',
+                    'id' : 'reply-text'
+                    }
+                    )}
 
 class AddBirdForm(forms.ModelForm):
     
