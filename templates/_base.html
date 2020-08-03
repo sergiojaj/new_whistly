@@ -1,48 +1,66 @@
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
-<meta name="Description" content="Enter your description here"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
-<link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="Description" content="Enter your description here" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
 
-<title>{% block title %}Whistly{% endblock title %}</title>
-</head>
-<body>
+    <title>{% block title %}Whistly{% endblock title %}</title>
+  </head>
+  <body>
+    <div id="main-div">
+      <!-- navbar -->
+      <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+          <div class="navbar-header">
+            <a href="{% url 'home' %}" class="navbar-brand">
+              <i class="fab fa-earlybirds"></i>
+              Whistly
+            </a>
+          </div>
+          <button
+            class="navbar-toggler btn_navbar"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              {% if user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'profile_detail' pk=user.pk %}"
+                  >{{ user|title }}'s Flock</a
+                >
+              </li>
+              <li class="nav-item">
+                {% endif %}
+              </li>
 
-<div id="main-div">
-  
-  <!-- navbar -->
-    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
-      <div class="container">
-        <div class="navbar-header">
-          <a href="{% url 'home' %}" class="navbar-brand">
-            <i class="fab fa-earlybirds"></i>
-            Whistly
-          </a>
-        </div>
-        <button class="navbar-toggler btn_navbar" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" 
-              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        
-        <ul class="navbar-nav mr-auto">
-          {% if user.is_authenticated %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'profile_detail' pk=user.pk %}">{{ user|title }}'s Flock</a></li>
-            <li class="nav-item">
-          {% endif %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'birds_nest' %}">Bird's Nest</a></li>
-        </ul>
-        
-        <ul class="navbar-nav ml-auto">
-          {% if user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'birds_nest' %}"
+                  >Bird's Nest</a
+                >
+              </li>
+            </ul>
+
+            <ul class="navbar-nav ml-auto">
+              {% if user.is_authenticated %}
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'add_bird' %}">Feathers UP</a>
               </li>
@@ -54,37 +72,175 @@
                 <a class="nav-link" href="{% url 'account_login' %}">Login</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'account_signup' %}">Sign Up</a>
+                <a class="nav-link" href="{% url 'account_signup' %}"
+                  >Sign Up</a
+                >
               </li>
-          {% endif %}
-            <!-- search form -->
-            <form action="{% url 'search_results' %}" method="GET" class="form-inline my-2 my-lg-0">
-              <input name='q' class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            </form>
-        </ul>
+              {% endif %}
+              <!-- search form -->
+              <form
+                action="{% url 'search_results' %}"
+                method="GET"
+                class="form-inline my-2 my-lg-0"
+              >
+                <input
+                  name="q"
+                  class="form-control mr-sm-2"
+                  type="search"
+                  placeholder="Search"
+                  aria-label="Search"
+                />
+              </form>
+            </ul>
+          </div>
+        </div>
+      </nav>
 
+      <!-- intro text -->
+      <div
+        class="container into_text mb-3"
+        style="padding-top: 70px;"
+        align="center"
+      >
+        <h1 id="base_h1">Birds are everywhere!</h1>
+        <h6 id="base_h6" class="mb-2">Let's not let them go unnoticed.</h6>
       </div>
-      </div>
-    </nav>
-  
-  <!-- intro text -->
-    <div class="container into_text mb-3" style="padding-top: 70px" align=center>
-          <h1 id="base_h1">Birds are everywhere!</h1>
-          <h6 id="base_h6" class="mb-2">Let's not let them go unnoticed.</h6>
+
+      {% block content %} {% endblock content %}
     </div>
 
-    {% block content %}
-    {% endblock content %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script
+      src="https://kit.fontawesome.com/e27a9e42a9.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="{% static 'js/ajax_csrf.js' %}"></script>
+    <script src="{% static 'js/base.js' %}"></script>
+    <script type="text/javascript">
+      // JS added here due to Ajax and needing to be reloaded along with html elements.
+      // rotates bird images
+      $("#rotate_left").on("click", function (e) {
+        e.preventDefault();
+        $.ajax({
+          url: ".",
+          type: "POST",
+          data: {
+            pk: "{{ bird_detail.pk }}",
+            direction: "left",
+            csrfmiddlewaretoken: "{{ csrf_token }}",
+          },
+          success: function (data, textStatus, jqXHR) {
+            $("#img_div").load(location.href + " #img_div");
+            console.log(textStatus);
+            console.log(jqXHR);
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+          },
+        });
+      });
 
-</div>
+      $("#rotate_right").on("click", function (e) {
+        e.preventDefault();
+        $.ajax({
+          url: ".",
+          type: "POST",
+          data: {
+            pk: "{{ bird_detail.pk }}",
+            direction: "right",
+            csrfmiddlewaretoken: "{{ csrf_token }}",
+          },
+          success: function (data, textStatus, errorThrown) {
+            $("#img_div").load(location.href + " #img_div");
+            console.log(textStatus);
+            console.log(errorThrown);
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+          },
+        });
+      });
+      // add or remove seed from bird
+      $("#seed").on("click", function () {
+        $.ajax({
+          url: "seed",
+          type: "POST",
+          data: {
+            pk: "{{ bird_detail.pk }}",
+            csrfmiddlewaretoken: "{{ csrf_token }}",
+          },
+          success: function (data, textStatus, errorThrown) {
+            $("#seed_ico").text(" " + data["count"]);
+            console.log(textStatus);
+            console.log(errorThrown);
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+          },
+        });
+      });
+      // add comments async
+      $("#comment_form").on("submit", function (event) {
+        event.preventDefault();
+        $.ajax({
+          url: "",
+          type: "POST",
+          data: {
+            comment: $("#comment-text").val(),
+            pk: "{{ bird_detail.pk }}",
+          },
+          success: function success_response(data, textStatus, errorThrown) {
+            // this is the right way of reloading just a div content
+            // location.reload(true);
+            $("#main-comment-body").load("" + " #main-comment-body");
+            $("#comment_form").trigger("reset");
+            console.log(textStatus);
+            console.log(errorThrown);
+          },
+          error: function invalid_response(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+          },
+        });
+      });
 
+      // replies
+      // fully works and this func gets triggered by myFunc() at base.js
 
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
-<script src="https://kit.fontawesome.com/e27a9e42a9.js" crossorigin="anonymous"></script>
-<script src="{% static 'js/ajax_csrf.js' %}"></script>
-<script src="{% static 'js/base.js' %}"></script>
-</body>
+      function postReply() {
+        $(".reply-form").each(function () {
+          $(this).on("submit", function (e) {
+            e.preventDefault();
+            console.log($(this));
+            $.ajax({
+              url: "",
+              type: "POST",
+              data: {
+                reply: $(this).find("#reply-text").val(),
+                pk: $(this).attr("data-pk"),
+              },
+              success: function success_response() {
+                $("#main-comment-body").load("" + " #main-comment-body");
+                $(this).find("#reply-text").trigger("reset");
+              },
+              error: function error_response(jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+              },
+            });
+          });
+        });
+      }
+    </script>
+  </body>
 </html>

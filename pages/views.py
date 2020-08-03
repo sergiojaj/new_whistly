@@ -1,6 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
+
+# ajax specific
 from django.http import JsonResponse
+from django.template.loader import render_to_string
 
 from django.views.generic import TemplateView, ListView, DetailView, FormView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormMixin
@@ -120,34 +123,82 @@ class BirdDetailReplyFormView(LoginRequiredMixin,SingleObjectMixin, FormView):
 class BirdDetailSimpleView(LoginRequiredMixin,View):
     
     def get(self, request, *args, **kwargs):
+        """
+        Needed to re-route teh view to the main BirdDetailView
+        """
         view = BirdDetailView.as_view()
-
-        if self.request.is_ajax():
-            pk = self.request.GET.get('pk', False)
-            if 'left' in self.request.GET.get('direction', False):
-                bird_obj = get_object_or_404(Bird, pk=pk)
-                bird_obj.rotate_left()
-            
-        
-        # calls model custom method to rotate image
-        # if request.GET.get('name', False):
-        #     pk = request.GET.get('pk', False)
-        #     if 'rotate-left' in request.GET.get('name'):
-        #         bird_obj = get_object_or_404(Bird, pk=pk)
-        #         bird_obj.rotate_left()
-        #     elif 'rotate-right' in request.GET.get('name'):
-        #         bird_obj = get_object_or_404(Bird, pk=pk)
-        #         bird_obj.rotate_right()
-        
         return view(request, *args, **kwargs)
-
+    
     def post(self, request, *args, **kwargs):
-        if request.POST.get('comment', False):
-            view = BirdDetailCommentFormView.as_view()
-            return view(request, *args, **kwargs)
-        elif request.POST.get('reply', False):
-            view = BirdDetailReplyFormView.as_view()
-            return view(request, *args, **kwargs)
+        print(request.POST.get)
+        if not request.is_ajax():
+            if request.POST.get('comment', False):
+                view = BirdDetailCommentFormView.as_view()
+                return view(request, *args, **kwargs)
+            else:
+                view = BirdDetailReplyFormView.as_view()
+                return view(request, *args, **kwargs)
+
+        if request.is_ajax():
+            if request.POST.get('direction', False):
+                if 'left' in request.POST.get('direction', False):
+                    pk = request.POST.get('pk', False)
+                    bird_obj = get_object_or_404(Bird, pk=pk)
+                    bird_obj.rotate_left()
+                    data = {}
+                    return JsonResponse(data)
+                elif 'right' in request.POST.get('direction', False):
+                    pk = request.POST.get('pk', False)
+                    bird_obj = get_object_or_404(Bird, pk=pk)
+                    bird_obj.rotate_right()
+                    data = {}
+                    return JsonResponse(data)
+            elif request.POST.get('comment', False):
+                form = CommentForm(request.POST)
+                if form.is_valid():
+                    bird = get_object_or_404(Bird, pk=request.POST.get('pk', False))
+                    comment = request.POST.get('comment', False)
+                    comment_creator_pk = request.user.pk
+                    photographer_pk = bird.photographer.pk
+                    if comment_creator_pk == photographer_pk:
+                        approved = True
+                    else:
+                        approved = False
+                    comment = Comment(
+                        comment = comment,
+                        comment_approved = approved,
+                         bird = bird,
+                        comment_creator = request.user
+                    )
+                    comment.save()
+                    data = {}
+                    # html = render_to_string('bird/comments_replies.html', {}, request=request)
+                    return JsonResponse(data)
+                else:
+                    data = {'message':'Ajax call failed'}
+                    return JsonResponse(data)
+            elif request.POST.get('reply', False):
+                form = ReplyForm(request.POST)
+                if form.is_valid():
+                    reply_creator = self.request.user
+                    pk = request.POST.get('pk', False)
+                    comment = get_object_or_404(Comment, pk=pk)
+                    # if comment.comment_creator.username == get_user_model().objects.get(username=request.user):
+                    #     approved = True
+                    # else:
+                    #     approved = False
+                    reply = Reply(
+                        reply = request.POST.get('reply', False),
+                        reply_approved = True,
+                        comment = comment,
+                        reply_creator = reply_creator
+                    )
+                    reply.save()
+                    data = {}
+                    return JsonResponse(data)
+                else:
+                    data = {'message':'Ajax call failed'}
+                    return JsonResponse(data)
 
 
 ############### This function view does the same as the 4 CBVs above () ####################
@@ -263,8 +314,8 @@ class EditReplyUpdateView(LoginRequiredMixin,UpdateView):
 
 
 class Seed_Add_Remove_View(View):
-    def get(self, request, *args, **kwargs):
-        pk = self.request.GET.get('pk', False)
+    def post(self, request, *args, **kwargs):
+        pk = self.request.POST.get('pk', False)
         bird = get_object_or_404(Bird, pk=pk)
         
         seeded = Seed.objects.values_list('seeded').filter(

@@ -156,16 +156,17 @@ LOGOUT_REDIRECT_URL = 'account_login'
 LOGIN_URL = 'account_login'
 DEFAULT_FROM_EMAIL = 'admin@whistlyproject.com'
 
-# MAIL GUN email settings
-EMAIL_HOST = os.environ.get('EMAIL_HOST')
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-
-#############################################email config
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+if ENVIRONMENT == 'production':
+    # MAIL GUN email settings
+    EMAIL_HOST = os.environ.get('EMAIL_HOST')
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+else:
+    # regular console printed email conf
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 ################################### custom user model.
 

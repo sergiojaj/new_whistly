@@ -1,6 +1,4 @@
 {% load crispy_forms_tags %}
-
-
 <!-- comments and replies -->
 <div class="container">
     <!-- will be displayed if there are comments linked to the bird -->
@@ -20,7 +18,7 @@
               <div class="row justify-content-center mt-2">
                 {% if user == bird_detail.photographer or user == comment.comment_creator %}
                       <div class="mb-1 mx-1">
-                        <a href="{% url 'comment_removed' pk=comment.pk %}">
+                        <a class="comment_remove" href="{% url 'comment_removed' pk=comment.pk %}" data-pk="{{ comment.pk }}">
                           <button class="comment_box_btn btn btn-danger" ><i class="far fa-trash-alt"></i></button>
                         </a>
                       </div>
@@ -42,7 +40,7 @@
       <!-- comments end -->
       <hr>
       <!-- reply text box that is displayed/hidden per reply btn click -->
-      <div id='{{comment.pk}}' style="display: none;">
+      <div id='{{comment.pk}}' style="display: none;" class="reply-div">
         <ul class="ml-3">
             <div class="media mt-3">
               <a href="{% url 'profile_detail' pk=comment.comment_creator.pk %}">
@@ -52,9 +50,10 @@
               <div class="media-body">
               <h5 class="mt-0 font-weight-bold blue-text">{{user.username|capfirst}}
                 </h5>
-                <form align=center action="{% url 'bird_detail' pk=comment.pk %}" method="POST"> {% csrf_token %}
+                <form align=center action="{% url 'bird_detail' pk=comment.pk %}" class="reply-form" data-pk="{{comment.pk}}" method="POST"> 
+                  {% csrf_token %}
                   {{reply_form|crispy}}
-                  <input type="submit" class="btn btn-primary" value="Reply">
+                  <input type="submit" class="btn btn-primary" value="Reply" >
                 </form>
               </div>
             </div>
@@ -181,7 +180,7 @@
                   {% endif %}
                   {% if user == bird_detail.photographer or user == comment.comment_creator %}
                   <div class="mb-1 mx-1">
-                    <a href="{% url 'comment_removed' pk=comment.pk %}">
+                    <a class="comment_remove" href="{% url 'comment_removed' pk=comment.pk %}" data-pk="{{ comment.pk }}">
                       <button class="comment_box_btn btn btn-danger" ><i class="far fa-trash-alt"></i></button>
                     </a>
                   </div>

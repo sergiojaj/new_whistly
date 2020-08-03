@@ -11,19 +11,18 @@
   <div class="container" align=center>
     <hr class="featurette-divider">
     <div class="col-12">
-      <img id='bird_image' class="bird_detail_image img-fluid" src="{{bird_detail.picture.url}}" data-src="{holder.js/500x500/auto}" alt="Picture not found">
+      <div id="img_div">
+        <img class="bird_detail_image img-fluid" src="{{bird_detail.picture.url}}" data-src="{holder.js/500x500/auto}" alt="Picture not found">
+      </div>
     </div>
     <div class="col-12 mt-2">
       {% if bird_detail.photographer == user %}
-
-        <button class="btn btn-warning rotate_btn" id="rotate_left" data-pk="{{bird_detail.pk}}">
+        <button class="btn btn-warning rotate_btn" id="rotate_left">
           <i class="fas fa-redo"></i>
         </button>          
-        <a href="?name=rotate-right&pk={{bird_detail.pk}}">
-          <button class="btn btn-warning rotate_btn">
+        <button class="btn btn-warning rotate_btn" id="rotate_right">
             <i class="fas fa-undo"></i>
           </button>
-        </a>
       {% endif %}
     </div>
   </div>
@@ -56,7 +55,7 @@
                         {% endif %}
                         <!-- seed button only for users other than photographer -->
                         {% if user != bird_detail.photographer %}
-                            <button class="btn btn-dark bird_detail_btn" id="seed" data-pk="{{bird_detail.pk}}">
+                            <button class="btn btn-dark bird_detail_btn" id="seed">
                               <i class="fas fa-seedling" id="seed_ico"> {{bird_detail.seeds.count}}</i> 
                             </button>
                         {% else %}
@@ -79,7 +78,7 @@
         <div class="media-body">
           <h5 class="mt-0 font-weight-bold blue-text">Add a comment:</h5>
           <div class="form-group basic-textarea rounded-corners">
-            <form method="POST" id="comment_form" action="." data-pk="{{bird_detail.pk}}">
+            <form method="POST" id="comment_form">
               {% csrf_token %}
               {{ comment_form|crispy }}
               <input type="submit" class="btn btn-primary" value="Send your nice comment!">
@@ -89,9 +88,13 @@
   </div>
 </div>
 
-<div class="main-comment-body">
-  {% include 'bird/comments_replies.html' %}
 
-</div>
+  <div id="main-comment-body">
+    
+    {% include 'bird/comments_replies.html' %}
+  
+  </div>
+
+
 
 {% endblock content %}

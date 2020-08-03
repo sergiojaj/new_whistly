@@ -94,7 +94,6 @@ class Bird(TimeStampedModel):
         rotated.seek(0)
         self.picture = InMemoryUploadedFile(rotated, 'ImageField', self.picture.name, 'image/jpeg', rotated.tell(), None)
         self.rotate_save()
-        print('this is left')
         return reverse('bird_detail', kwargs={'pk':self.pk})
 
     def rotate_save(self, *args, **kwargs):
