@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     'debug_toolbar',
     # aws related
     'storages',
+    # anymail
+    "anymail",
 
     #local
     'users.apps.UsersConfig',
@@ -157,11 +159,21 @@ LOGIN_URL = 'account_login'
 DEFAULT_FROM_EMAIL = 'admin@whistlyproject.com'
 
 # MAIL GUN email settings
-EMAIL_HOST = os.environ.get('EMAIL_HOST')
-EMAIL_PORT = 587
+# EMAIL_HOST = os.environ.get('EMAIL_HOST')
+# EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+# EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+
+##### anymail settings
+ANYMAIL = {
+    # (exact settings here depend on your ESP...)
+    "MAILGUN_API_KEY": os.environ.get('MAILGUN_API_KEY'),
+    "MAILGUN_SENDER_DOMAIN": os.environ.get('MAILGUN_DOMAIN'),  # your Mailgun domain, if needed
+}
+EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"  # or sendgrid.EmailBackend, or...
+# DEFAULT_FROM_EMAIL = "you@example.com"  # if you don't already have this in settings
+# SERVER_EMAIL = "your-server@example.com"  # ditto (default from-email for Django errors)
 
 #############################################email config
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
