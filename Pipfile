@@ -18,7 +18,7 @@ dj-database-url = "*"
 boto3 = "*"
 django-storages = "*"
 django-heroku = "*"
-django-anymail = {extras = ["mailgun"], version = "*"}
+django-anymail = {extras = ["mailgun"],version = "*"}
 
 [requires]
 python_version = "3.8"
