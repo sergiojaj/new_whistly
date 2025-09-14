@@ -6,14 +6,24 @@
 
    
 {% block content %}
-
-    <div class="container" align=center>
-        <form action="" class="forms" method="POST" enctype="multipart/form-data"> {% csrf_token %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <h2 class="h4 mb-3 text-center">Edit profile</h2>
+          <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
             {{ form|crispy }}
-            <button class="btn btn-light">Update Info</button>
-        </form>
+            <div class="d-grid">
+              <button class="btn btn-primary" type="submit">Update info</button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
+  </div>
+</div>
 
-
-    {% include 'footer.html' %}
+{% include 'footer.html' %}
 {% endblock content %}

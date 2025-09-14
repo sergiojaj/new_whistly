@@ -4,36 +4,51 @@
 {% block title %}Bird's Nest{% endblock title %}
 
 {% block content %}
-
-<div class="container" align=center>
-
-    <h3>Check out our most recent contributions</h3>
-    
-    <hr class="mb-4">
-
-<!-- birds list starts here -->
-    <div class="row">
-        {% for bird in birds_list %}
-            <div class="col-sm-6 col-md-6 col-lg-4 p-3">
-                    <a href="{{ bird.get_absolute_url }}">
-                        <img class="bird_thumbnail" src="{{ bird.picture.url }}" alt="{{ bird.species }}" >
-                    </a>
-                <div class="caption mt-2">
-                    <h3>Species: {{bird.species}}</h3>
-                    <a href="{% url 'profile_detail' pk=bird.photographer.pk %}">
-                        <p>Photographer: {{bird.photographer|capfirst}}</p>
-                    </a>
-                </div>
+<section class="position-relative py-4" style="background: linear-gradient(180deg, rgba(9,32,63,0.05), rgba(9,32,63,0.02));">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+      <h3 class="mb-2">Bird's Nest</h3>
+      <div class="d-flex gap-2">
+        <a class="btn btn-sm {% if order_by=='seeds' %}btn-primary{% else %}btn-outline-primary{% endif %}" href="?order_by=seeds"><i class="fa-solid fa-seedling me-1"></i>Most seeds</a>
+        <a class="btn btn-sm {% if order_by=='species' %}btn-primary{% else %}btn-outline-primary{% endif %}" href="?order_by=species">Species A–Z</a>
+        <a class="btn btn-sm {% if order_by=='photographer' %}btn-primary{% else %}btn-outline-primary{% endif %}" href="?order_by=photographer">Photographer A–Z</a>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+  {% if adsense_client_id and adsense_slot_top %}
+  <div class="mb-3 d-flex justify-content-center">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="{{ adsense_client_id }}"
+         data-ad-slot="{{ adsense_slot_top }}"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+  </div>
+  {% endif %}
+  <div class="row g-3">
+    {% for bird in birds_list %}
+    <div class="col-12 col-sm-6 col-lg-4">
+      <a class="text-decoration-none" href="{{ bird.get_absolute_url }}">
+        <div class="card shadow-sm h-100 card-hover">
+          <div class="position-relative ratio ratio-4x3">
+            <img class="card-img-top object-fit-cover" src="{{ bird.picture.url }}" alt="{{ bird.species }}" loading="lazy">
+            <div class="position-absolute top-0 end-0 m-2 badge bg-dark-subtle text-dark"><i class="fa-solid fa-seedling me-1"></i>{{ bird.seeds.count }}</div>
+          </div>
+          <div class="card-body py-2">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="card-title fs-6 mb-0">{{ bird.species }}</h5>
+              <span class="text-muted small">{{ bird.photographer|capfirst }}</span>
             </div>
-        {% endfor %}
-<!-- birds list ends here -->
-
-<!-- pagination start -->
-{% include 'pagination.html' %}
-<!-- pagination end -->
-
+            <div class="text-muted small">{{ bird.location }}</div>
+          </div>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  {% include 'pagination.html' %}
 </div>
-</div>
-
-
+</section>
 {% endblock content %}

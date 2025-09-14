@@ -1,70 +1,103 @@
 {% extends '_base.html' %}
 {% load static %}
-{% load crispy_forms_tags %}
 
-{% block title %}Home{% endblock title %}
+{% block title %}Whistly — Birds Near Us{% endblock title %}
 
 {% block content %}
-
-<div class="container" align=center>
-  <img class="mb-2 home_page_top_img  img-fluid" src="{% static 'img/everywhere_2.jpg' %}" alt="image of geese hidden on tall grass">
-</div>
-
-<div class="jumbotron jumbotron-fluid p-3 mt-3">
-  <div class="container home_text">
-      <h5>Take pictures of the birds you see during your day... 
-          or night and upload them to Whistly.</h5>
-  
-      <h5>With these pictures we hope to make people conscious
-          of our feathered neighbors!</h5>
-          <h5>Just follow these simple steps and you are ready to go!</h5>
+<section class="position-relative overflow-hidden" style="background: linear-gradient(180deg, rgba(9,32,63,0.8), rgba(9,32,63,0.6)), url('{% static 'img/background.jpg' %}') center/cover no-repeat;">
+  <div class="container py-5 text-white text-center">
+    <h1 class="display-5 fw-bold">Capture birds around you. Tell their story.</h1>
+    <p class="lead">Share photos of birds you encounter, map their locations, and inspire others to notice our feathered neighbors.</p>
+    <div class="d-flex gap-2 justify-content-center mt-3">
+      <a class="btn btn-primary btn-lg" href="{% url 'add_bird' %}"><i class="fa-solid fa-feather me-2"></i>Feathers UP</a>
+      <a class="btn btn-outline-light btn-lg" href="{% url 'birds_nest' %}"><i class="fa-solid fa-dove me-2"></i>Explore the Nest</a>
+    </div>
   </div>
-      
-</div>
-    
-    
-    <div class="container-fluid mt-5" align=center>
-      
-      <div class="row">
-                  <div class="col-lg-4 mb-3">
-                    <h2 class="mb-2">Step one - Hide & Seek</h2>
-                    <img class="home_page_imgs rounded-circle img-fluid mb-3" src="{% static 'img/hide&seek.jpg' %}" alt="image of geese hidden on tall grass">
-                    <h5 class="tips-text">The first step is to locate the bird and this can be tricky! 
-                        A Few birds are exhibitionists but most are quite shy on cameras and reluctant to show off their beauty for stranger. 
-                        Be very quite and try to mingle to their environement not to disturb or send away our little friends!</h5>
-                  </div>
-                  <div class="col-lg-4 mb-3">
-                    <h2 class="mb-2">Step Two - Be Patient!</h2>
-                    <img class="home_page_imgs rounded-circle img-fluid mb-3" src="{% static 'img/patient.jpg' %}" alt="image of seagul standing on one leg">
-                    <h5 class="tips-text">The second step is to be very patient and let the bird feel comfortable with your presence. A startled bird will not pose for your lens and will probably just fly away (or chase you away if it is a Goose!).
-                      Take your time and it will be reward with the most beautiful pictures. 
-                    </h5>
-                  </div>
-                  <div class="col-lg-4">
-                    <h2 class="mb-2">Step Three - Share!</h2>
-                    <img class="home_page_imgs rounded-circle img-fluid mb-3" src="{% static 'img/share.jpg' %}" alt="image of birds sharing food">
-                    <h5 class="tips-text">The third step is easy: Select the best pictures you took and share with our community! Just login and start uploading.
-                        Share as much detail you can about the bird and the place you took the picture. We are more than happy to receive your contribution!
-                    </h5>
-                  </div>
+  </section>
+
+<section class="container py-5">
+  <div class="row g-4 text-center">
+    <div class="col-12 col-md-4">
+      <div class="p-3 h-100 border rounded-3">
+        <i class="fa-solid fa-camera-retro fa-2x mb-2"></i>
+        <h3 class="h5">Easy uploads</h3>
+        <p class="text-muted">Add a photo, we suggest the location from the picture and even guess the species for you.</p>
+      </div>
     </div>
-
-
-      <div class="row">
-      {% if user.is_authenticated %}
-        <div class="col-12 mt-3 mb-2" align=center>
-            <h3 class="mb-4">Start sharing with our community and enjoy!</h3> 
-            <a href="{% url 'add_bird' %}"><button class="btn btn-info home_gallery_btn" style="height: 70px; width: 250px">Feathers UP!</button></a>
-        </div>
-      {% else %}
-         <div class="col-xm-12 col-sm-12" align=center>
-            <h3>To start, just sign up or login with us!</h3>
-            <a href="{% url 'account_login' %}" style="display: inline;"><button class="btn btn-info mb-2">Login In</button></a>
-            <a href="{% url 'account_signup' %}"><button class="btn btn-info mb-2">Sign Up</button></a>
-          </div>
-      {% endif %}
-        </div>
+    <div class="col-12 col-md-4">
+      <div class="p-3 h-100 border rounded-3">
+        <i class="fa-solid fa-map-location-dot fa-2x mb-2"></i>
+        <h3 class="h5">Interactive map</h3>
+        <p class="text-muted">See your sightings on a map. Free OpenStreetMap & Leaflet — no keys required.</p>
+      </div>
     </div>
+    <div class="col-12 col-md-4">
+      <div class="p-3 h-100 border rounded-3">
+        <i class="fa-solid fa-people-group fa-2x mb-2"></i>
+        <h3 class="h5">Community</h3>
+        <p class="text-muted">Comment, reply, and encourage others. Help bring attention to birds living alongside us.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-    {% include 'footer.html' %}
+<section class="container pb-5">
+  <div class="row g-4">
+    <div class="col-12 col-lg-6">
+      <h2 class="h5 mb-3">Trending now</h2>
+      <div class="row g-3">
+        {% for bird in trending_birds %}
+        <div class="col-6">
+          <a class="text-decoration-none" href="{{ bird.get_absolute_url }}">
+            <div class="card shadow-sm">
+              <div class="ratio ratio-4x3"><img class="card-img-top object-fit-cover" src="{{ bird.picture.url }}" alt="{{ bird.species }}"></div>
+              <div class="card-body py-2">
+                <div class="small fw-semibold">{{ bird.species }}</div>
+                <div class="text-muted small"><i class="fa-solid fa-seedling me-1"></i>{{ bird.seeds.count }}</div>
+              </div>
+            </div>
+          </a>
+        </div>
+        {% empty %}
+        <div class="col-12 text-muted">No birds yet. Be the first to upload!</div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="col-12 col-lg-6">
+      <h2 class="h5 mb-3">Latest uploads</h2>
+      <div class="row g-3">
+        {% for bird in latest_birds %}
+        <div class="col-6">
+          <a class="text-decoration-none" href="{{ bird.get_absolute_url }}">
+            <div class="card shadow-sm">
+              <div class="ratio ratio-4x3"><img class="card-img-top object-fit-cover" src="{{ bird.picture.url }}" alt="{{ bird.species }}"></div>
+              <div class="card-body py-2">
+                <div class="small fw-semibold">{{ bird.species }}</div>
+                <div class="text-muted small">{{ bird.location }}</div>
+              </div>
+            </div>
+          </a>
+        </div>
+        {% empty %}
+        <div class="col-12 text-muted">No birds yet. Be the first to upload!</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="container pb-5">
+  <div class="text-center">
+    {% if user.is_authenticated %}
+      <a class="btn btn-primary btn-lg" href="{% url 'add_bird' %}"><i class="fa-solid fa-feather me-2"></i>Share a sighting</a>
+    {% else %}
+      <div class="d-flex gap-2 justify-content-center">
+        <a class="btn btn-primary btn-lg" href="{% url 'account_login' %}">Log in</a>
+        <a class="btn btn-outline-primary btn-lg" href="{% url 'account_signup' %}">Sign up</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% include 'footer.html' %}
 {% endblock content %}

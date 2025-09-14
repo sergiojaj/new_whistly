@@ -5,6 +5,12 @@ from django.views.generic import TemplateView, ListView, DetailView, FormView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormMixin
 from django.views.generic.detail import SingleObjectMixin
 from django.views import View
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
+from django.utils.decorators import method_decorator
+from django.conf import settings
+from django.http import JsonResponse, HttpResponseBadRequest
+import requests
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model, get_user
 
@@ -19,6 +25,17 @@ from birds.forms import CommentForm, ReplyForm, AddBirdForm
 #### Basic Views
 class HomeTemplateView(TemplateView):
     template_name = 'home.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        try:
+            trending = Bird.objects.annotate(num_seed=Count('seeds')).order_by('-num_seed')[:6]
+            latest = Bird.objects.all()[:6]
+        except Exception:
+            trending = Bird.objects.all()[:6]
+            latest = Bird.objects.all()[:6]
+        context['trending_birds'] = trending
+        context['latest_birds'] = latest
+        return context
 
 class RemoveAccountDeleteView(LoginRequiredMixin,DeleteView):
     model = get_user_model()
@@ -31,6 +48,11 @@ class ProfileDetailView(LoginRequiredMixin,DetailView):
     model = get_user_model()
     template_name = 'profile/profile_detail.html'
     context_object_name = 'profile'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['gmaps_api_key'] = getattr(settings, 'GOOGLE_MAPS_API_KEY', '')
+        return context
     
 class ProfileUpdateView(LoginRequiredMixin,UpdateView):
 
@@ -53,6 +75,22 @@ class BirdsNestListView(ListView):
     # pagination is easy
     paginate_by = 9
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        order_by = self.request.GET.get('order_by')
+        if order_by == 'seeds':
+            qs = qs.annotate(num_seed=Count('seeds')).order_by('-num_seed')
+        elif order_by == 'species':
+            qs = qs.order_by('species')
+        elif order_by == 'photographer':
+            qs = qs.order_by('photographer__username')
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['order_by'] = self.request.GET.get('order_by','')
+        return context
+
 class BirdDetailView(LoginRequiredMixin, DetailView):
     model = Bird
     template_name = 'bird/bird_detail.html'
@@ -62,6 +100,8 @@ class BirdDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['comment_form'] = CommentForm()
         context['reply_form'] = ReplyForm()
+        from django.conf import settings
+        context['gmaps_api_key'] = getattr(settings, 'GOOGLE_MAPS_API_KEY', '')
         return context
 
 class BirdDetailCommentFormView(LoginRequiredMixin,SingleObjectMixin, FormView):
@@ -117,20 +157,19 @@ class BirdDetailReplyFormView(LoginRequiredMixin,SingleObjectMixin, FormView):
 
 
 class BirdDetailSimpleView(LoginRequiredMixin,View):
-    
     def get(self, request, *args, **kwargs):
         view = BirdDetailView.as_view()
-        
-        # calls model custom method to rotate image
-        if request.GET.get('name', False):
-            pk = request.GET.get('pk', False)
-            if 'rotate-left' in request.GET.get('name'):
-                bird_obj = get_object_or_404(Bird, pk=pk)
+        # Rotation used to be performed via GET. Keep backward-compat but enforce ownership.
+        action = request.GET.get('name')
+        pk = request.GET.get('pk')
+        if action and pk:
+            bird_obj = get_object_or_404(Bird, pk=pk)
+            if request.user != bird_obj.photographer:
+                return redirect('bird_detail', pk=bird_obj.pk)
+            if 'rotate-left' in action:
                 bird_obj.rotate_left()
-            elif 'rotate-right' in request.GET.get('name'):
-                bird_obj = get_object_or_404(Bird, pk=pk)
+            elif 'rotate-right' in action:
                 bird_obj.rotate_right()
-        
         return view(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -140,6 +179,17 @@ class BirdDetailSimpleView(LoginRequiredMixin,View):
         elif request.POST.get('reply', False):
             view = BirdDetailReplyFormView.as_view()
             return view(request, *args, **kwargs)
+        elif request.POST.get('rotate', False):
+            direction = request.POST.get('direction')
+            pk = request.POST.get('pk')
+            bird_obj = get_object_or_404(Bird, pk=pk)
+            if request.user == bird_obj.photographer:
+                if direction == 'left':
+                    bird_obj.rotate_left()
+                elif direction == 'right':
+                    bird_obj.rotate_right()
+            return redirect('bird_detail', pk=bird_obj.pk)
+        return redirect('bird_detail', pk=kwargs.get('pk'))
 
 
 ############### This function view does the same as the 4 CBVs above () ####################
@@ -202,6 +252,54 @@ class AddBirdCreateView(LoginRequiredMixin,CreateView):
     def form_valid(self, form):
         form.instance.photographer = self.request.user
         return super(AddBirdCreateView, self).form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['gmaps_api_key'] = getattr(settings, 'GOOGLE_MAPS_API_KEY', '')
+        return context
+
+class SupportTemplateView(TemplateView):
+    template_name = 'support.html'
+
+class MyBirdsMapView(LoginRequiredMixin, TemplateView):
+    template_name = 'map/my_birds_map.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Provide the current user's birds with coordinates
+        birds = Bird.objects.filter(photographer=self.request.user).exclude(latitude__isnull=True).exclude(longitude__isnull=True)
+        context['my_birds'] = birds
+        return context
+
+class SuggestSpeciesView(View):
+    def post(self, request, *args, **kwargs):
+        token = getattr(settings, 'HF_API_TOKEN', '')
+        model_id = getattr(settings, 'HF_MODEL_ID', 'microsoft/resnet-50')
+        if not token:
+            return HttpResponseBadRequest('Model suggestion not configured. Set HF_API_TOKEN env var for free Hugging Face Inference API.')
+        if 'image' not in request.FILES:
+            return HttpResponseBadRequest('No image provided')
+        img_file = request.FILES['image']
+        try:
+            resp = requests.post(
+                f'https://api-inference.huggingface.co/models/{model_id}',
+                headers={'Authorization': f'Bearer {token}'},
+                data=img_file.read(),
+                timeout=25
+            )
+            resp.raise_for_status()
+            data = resp.json()
+            # Normalize output: can be list of dicts [{'label':..., 'score':...}]
+            suggestions = []
+            if isinstance(data, list):
+                for item in data[:5]:
+                    label = item.get('label')
+                    score = item.get('score')
+                    if label:
+                        suggestions.append({'label': label, 'score': score})
+            return JsonResponse({'suggestions': suggestions})
+        except Exception as e:
+            return HttpResponseBadRequest(f'Failed to suggest species: {e}')
 
 ##### comment cbvs
 
@@ -255,15 +353,16 @@ class EditReplyUpdateView(LoginRequiredMixin,UpdateView):
 
 
 class Seed_Add_Remove_View(View):
-    def get(self, request, *args, **kwargs):
+    @method_decorator(login_required)
+    @method_decorator(require_POST)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
         bird = get_object_or_404(Bird, pk=kwargs['pk'])
-        seeded = Seed.objects.values_list('seeded').filter(
-                                                seeder__username=request.user).filter(
-                                                    bird__species=bird.species)
+        seeded = Seed.objects.filter(seeder=request.user, bird=bird).exists()
         if seeded:
-            seed = Seed.objects.filter(
-                                        seeder__username=self.request.user).filter(
-                                        bird__species=bird.species)
+            seed = Seed.objects.filter(seeder=self.request.user, bird=bird)
             seed.delete()
             return redirect('bird_detail', pk=bird.pk)
         else:
@@ -273,7 +372,7 @@ class Seed_Add_Remove_View(View):
             seed.seeder = self.request.user
             seed.save()
             return redirect('bird_detail', pk=bird.pk)
-        return super().get(request, *args, **kwargs)
+        return redirect('bird_detail', pk=bird.pk)
 
 
 ##### search
@@ -322,27 +421,43 @@ class SearchResultsListView(LoginRequiredMixin, ListView):
 ### hopefuly learn cbvs enough to not need to use these
 ## protect these with login_required decorator
 
+@login_required
+@require_POST
 def approve_comment(request, pk):
     comment = get_object_or_404(Comment, pk=pk)
-    comment.comment_approved = True
-    comment.save()
+    # Only the photographer can approve comments on their bird
+    if request.user == comment.bird.photographer:
+        comment.comment_approved = True
+        comment.save()
     return redirect('bird_detail', pk=comment.bird.pk)
 
+@login_required
+@require_POST
 def remove_comment(request, pk):
     comment = get_object_or_404(Comment, pk=pk)
     comment_pk = comment.bird.pk
-    comment.delete()
+    # Photographer or the comment creator may delete
+    if request.user == comment.bird.photographer or request.user == comment.comment_creator:
+        comment.delete()
     return redirect('bird_detail', pk=comment_pk)
 
+@login_required
+@require_POST
 def approve_reply(request, pk):
     reply = get_object_or_404(Reply, pk=pk)
     reply_pk = reply.comment.bird.pk
-    reply.reply_approved = True
-    reply.save()
+    # Only the bird photographer can approve replies
+    if request.user == reply.comment.bird.photographer:
+        reply.reply_approved = True
+        reply.save()
     return redirect('bird_detail', pk=reply_pk)
 
+@login_required
+@require_POST
 def remove_reply(request, pk):
     reply = get_object_or_404(Reply, pk=pk)
     reply_pk = reply.comment.bird.pk
-    reply.delete()
+    # Photographer or the reply creator may delete
+    if request.user == reply.comment.bird.photographer or request.user == reply.reply_creator:
+        reply.delete()
     return redirect('bird_detail', pk=reply_pk)

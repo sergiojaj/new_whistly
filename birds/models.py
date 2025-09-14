@@ -37,6 +37,8 @@ class Bird(TimeStampedModel):
     )
     species = models.CharField(max_length=150, blank=False)
     location = models.CharField(max_length=200, blank=False)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     picture = models.ImageField(upload_to='bird', blank=False, validators=[file_size])
     photographer = models.ForeignKey(
         get_user_model(),
@@ -62,8 +64,12 @@ class Bird(TimeStampedModel):
         image = Image.open(self.picture)
         output = BytesIO()
         width, height = image.size
-        image = image.resize((int(width/2),int(height/2)),
-                                Image.ANTIALIAS)
+        # Pillow >=10 uses Image.Resampling.LANCZOS; fall back for older versions
+        try:
+            resample_filter = Image.Resampling.LANCZOS
+        except AttributeError:
+            resample_filter = Image.LANCZOS if hasattr(Image, 'LANCZOS') else Image.ANTIALIAS
+        image = image.resize((int(width/2), int(height/2)), resample_filter)
         image.save(output, format='JPEG', optimize=True, quality=75)
         output.seek(0)
         self.picture = InMemoryUploadedFile(output, 'ImageField', self.picture.name, 'image/jpeg', output.tell(), None)
@@ -75,7 +81,11 @@ class Bird(TimeStampedModel):
         """
         original = Image.open(self.picture)
         rotated = BytesIO()
-        original = original.transpose(Image.ROTATE_90)
+        try:
+            transpose_op = Image.Transpose.ROTATE_90
+        except AttributeError:
+            transpose_op = Image.ROTATE_90
+        original = original.transpose(transpose_op)
         original.save(rotated, format='JPEG')
         rotated.seek(0)
         self.picture = InMemoryUploadedFile(rotated, 'ImageField', self.picture.name, 'image/jpeg', rotated.tell(), None)
@@ -89,7 +99,11 @@ class Bird(TimeStampedModel):
         """
         original = Image.open(self.picture)
         rotated = BytesIO()
-        original = original.transpose(Image.ROTATE_270)
+        try:
+            transpose_op = Image.Transpose.ROTATE_270
+        except AttributeError:
+            transpose_op = Image.ROTATE_270
+        original = original.transpose(transpose_op)
         original.save(rotated, format='JPEG')
         rotated.seek(0)
         self.picture = InMemoryUploadedFile(rotated, 'ImageField', self.picture.name, 'image/jpeg', rotated.tell(), None)

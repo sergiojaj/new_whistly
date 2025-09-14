@@ -1,0 +1,18 @@
+{% extends '_base.html' %}
+{% load static %}
+{% block title %}My Birds Map{% endblock title %}
+{% block content %}
+<div class="container-fluid p-0" style="height: calc(100vh - 120px);">
+  <div id="my-birds-map" style="width:100%; height:100%;"></div>
+</div>
+<script>
+  var MY_BIRDS = [
+    {% for b in my_birds %}
+      {lat: {{ b.latitude }}, lng: {{ b.longitude }}, image: "{{ b.picture.url }}", url: "{% url 'bird_detail' pk=b.pk %}", species: "{{ b.species|escapejs }}"},
+    {% endfor %}
+  ];
+</script>
+<script src="{% static 'js/maps.js' %}"></script>
+<script>document.addEventListener('DOMContentLoaded', function(){ if (window.initMyBirdsMap) initMyBirdsMap(); });</script>
+{% endblock content %}
+

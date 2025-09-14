@@ -17,20 +17,27 @@ import logging.config # it has to be .config as logging is just a directory (con
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# this var comes from docker-compose.yml
-ENVIRONMENT = os.environ.get('ENVIRONMENT', default='production')
+# ENVIRONMENT: 'development' or 'production'
+ENVIRONMENT = os.environ.get('ENVIRONMENT', default='development')
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-insecure-secret-key-change-me'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = int(os.environ.get('DEBUG', default=0))
+DEBUG = int(os.environ.get('DEBUG', default=1 if ENVIRONMENT != 'production' else 0))
 
-ALLOWED_HOSTS = ['whistly-project.herokuapp.com','localhost','127.0.0.1']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+
+# CSRF trusted origins (comma-separated env var of full scheme+host)
+_csrf_origins = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
+CSRF_TRUSTED_ORIGINS = [o for o in _csrf_origins.split(',') if o]
+
+# Django 4.x+ recommended default id field
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # Application definition
@@ -46,10 +53,10 @@ INSTALLED_APPS = [
     
     #3rd parties
     'crispy_forms',
+    'crispy_bootstrap5',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'debug_toolbar',
     # aws related
     'storages',
     # anymail
@@ -61,16 +68,23 @@ INSTALLED_APPS = [
     'birds.apps.BirdsConfig',
 ]
 
+# Debug toolbar only in DEBUG
+if DEBUG:
+    INSTALLED_APPS += ['debug_toolbar']
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
+
+if DEBUG:
+    MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
 
 ROOT_URLCONF = 'whistly_project.urls'
 
@@ -85,6 +99,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'whistly_project.context_processors.site_settings',
             ],
         },
     },
@@ -98,12 +113,13 @@ WSGI_APPLICATION = 'whistly_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'db',
-        'PORT': 5432
+        # Default to SQLite for development
+        'ENGINE': 'django.db.backends.sqlite3' if ENVIRONMENT != 'production' else 'django.db.backends.postgresql',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3') if ENVIRONMENT != 'production' else os.environ.get('POSTGRES_DB', 'postgres'),
+        'USER': os.environ.get('POSTGRES_USER', 'postgres'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'postgres'),
+        'HOST': os.environ.get('POSTGRES_HOST', 'db'),
+        'PORT': int(os.environ.get('POSTGRES_PORT', 5432)),
     }
 }
 
@@ -171,12 +187,13 @@ ANYMAIL = {
     "MAILGUN_API_KEY": os.environ.get('MAILGUN_API_KEY'),
     "MAILGUN_SENDER_DOMAIN": os.environ.get('MAILGUN_DOMAIN'),  # your Mailgun domain, if needed
 }
-EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"  # or sendgrid.EmailBackend, or...
+EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"  # default for production
 # DEFAULT_FROM_EMAIL = "you@example.com"  # if you don't already have this in settings
 # SERVER_EMAIL = "your-server@example.com"  # ditto (default from-email for Django errors)
 
 #############################################email config
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+if ENVIRONMENT != 'production':
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 ################################### custom user model.
@@ -185,7 +202,9 @@ AUTH_USER_MODEL = 'users.CustomUser'
 
 #################################### crispy-forms settings
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
+# Explicitly allow bootstrap5 pack on crispy >=2
+CRISPY_ALLOWED_TEMPLATE_PACKS = ("bootstrap", "bootstrap3", "bootstrap4", "bootstrap5")
 
 #################################### allauth settings
 
@@ -205,10 +224,13 @@ ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
 
 # django-debug-toolbar
-# this is to make sure that our internal ips matches that of our Docker Host
-import socket
-hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
-INTERNAL_IPS = [ip[:-1] + '1' for ip in ips]
+if DEBUG:
+    # this is to make sure that our internal ips matches that of our Docker Host
+    import socket
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS = [ip[:-1] + '1' for ip in ips]
+else:
+    INTERNAL_IPS = []
 
 
 ###### DEPLOYMENT SECURITY RELATED 
@@ -233,10 +255,10 @@ if ENVIRONMENT == 'production':
 # Heroku
 # using the dj-database-url will automatically use the 
 # postgres database we later set up on Heroku
-    import dj_database_url, django_heroku
-    db_from_env = dj_database_url.config(conn_max_age=600)
-    DATABASES['default'].update(db_from_env)
-    django_heroku.settings(locals(), logging=False)
+    import dj_database_url
+    db_from_env = dj_database_url.config(conn_max_age=600, ssl_require=True)
+    if db_from_env:
+        DATABASES['default'].update(db_from_env)
 
 # Static files (CSS, JavaScript, Images)
 # Settings for the AWS static files access
@@ -254,10 +276,6 @@ if ENVIRONMENT == 'production':
     STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
     STATIC_URL = '/static/'
-
-    STATICFILES_DIRS = [
-        os.path.join(BASE_DIR, 'static'),
-    ]
 
     # logging to catch warning errors in production
     LOGGING = {
@@ -285,3 +303,18 @@ if ENVIRONMENT == 'production':
 # from django.core.management.utils import get_random_secret_key
 # secret_key()
 # combine keys (escape $$ if needed)
+# Google Maps
+GOOGLE_MAPS_API_KEY = os.environ.get('GOOGLE_MAPS_API_KEY', '')
+
+# Optional Hugging Face Inference API (free tier with token)
+HF_API_TOKEN = os.environ.get('HF_API_TOKEN', '')
+HF_MODEL_ID = os.environ.get('HF_MODEL_ID', 'microsoft/resnet-50')
+# Monetization and integrations (optional, safe defaults)
+ADSENSE_CLIENT_ID = os.environ.get('ADSENSE_CLIENT_ID', '')
+ADSENSE_SLOT_TOP = os.environ.get('ADSENSE_SLOT_TOP', '')
+ADSENSE_SLOT_INLINE = os.environ.get('ADSENSE_SLOT_INLINE', '')
+DONATION_URL = os.environ.get('DONATION_URL', '')  # e.g. BuyMeACoffee or Ko-fi link
+STRIPE_PAYMENT_LINK = os.environ.get('STRIPE_PAYMENT_LINK', '')  # optional payment link
+
+# Nominatim identification (optional; improves reliability)
+NOMINATIM_EMAIL = os.environ.get('NOMINATIM_EMAIL', '')

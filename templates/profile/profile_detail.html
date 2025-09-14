@@ -1,96 +1,77 @@
-{% extends '_base.html' %} {% load crispy_forms_tags %} 
+{% extends '_base.html' %} {% load crispy_forms_tags %} {% load static %}
 {% block title%}Profiles Gallery{% endblock title %}
 
 {% block content %}
 
-<div class="row" align="center">
-  <div class="col-12 profile_info">
-    <div class="col-12 mt-4">
-      <div class="card profile_card">
-        <div class="card-header">
-          <h4>Profile name: {{ profile.username }}</h4>
-          {{ profile.email }}
-        </div>
-        <div class="col-12 mt-4">
-          <img
-            src="{{ profile.profile_picture.url }}"
-            alt="profile picture"
-            class="profile_picture"
-          />
-        </div>
-        <div class="card-body">
-          <blockquote class="blockquote mb-0">
-            <p>{{ profile.about_user }}.</p>
-            <footer class="blockquote-footer">
-              Registered since:
-              <cite title="Source Title">{{ profile.registered_at }}</cite>
-            </footer>
-          </blockquote>
-        </div>
-        {% if profile == user %}
-        <div class="mb-3">
-          <a href="{% url 'edit_profile' pk=profile.pk %}">
-            <button class="btn btn-primary profile_btn m-2">
-              Edit Info
-            </button>
-          </a>
-          <a href="{% url 'account_reset_password' %}">
-            <button class="btn btn-info profile_btn m-2">
-              Reset password
-            </button>
-          </a>
-          <a href="{% url 'account_change_password' %}">
-            <button class="btn btn-light profile_btn m-2">
-              Change password
-            </button>
-          </a>
-          <a href="{% url 'remove_account' pk=profile.pk %}">
-            <button class="btn btn-danger profile_btn m-2">
-              Remove account
-            </button>
-          </a>
-        </div>
-        {% endif %}
+<div class="row">
+  <div class="col-12">
+    <section class="text-center py-4" style="background: linear-gradient(180deg, rgba(9,32,63,0.08), rgba(9,32,63,0)); border-radius:12px;">
+      <img src="{{ profile.profile_picture.url }}" alt="profile picture" class="profile_picture mb-2"/>
+      <h2 class="mb-0">{{ profile.username }}</h2>
+      <div class="text-muted small">{{ profile.email }}</div>
+      <p class="mb-1 mt-2">{{ profile.about_user }}</p>
+      <div class="text-muted small">Member since {{ profile.registered_at }}</div>
+      {% if profile == user %}
+      <div class="d-flex flex-wrap gap-2 justify-content-center mt-3">
+        <a class="btn btn-primary btn-sm" href="{% url 'edit_profile' pk=profile.pk %}">Edit info</a>
+        <a class="btn btn-outline-primary btn-sm" href="{% url 'account_change_password' %}">Change password</a>
+        <a class="btn btn-outline-secondary btn-sm" href="{% url 'account_reset_password' %}">Reset password</a>
+        <a class="btn btn-danger btn-sm" href="{% url 'remove_account' pk=profile.pk %}">Remove account</a>
+        <a class="btn btn-dark btn-sm" href="{% url 'my_birds_map' %}"><i class="fa-solid fa-map-location-dot me-1"></i>My Birds Map</a>
+      </div>
+      {% endif %}
+    </section>
+  </div>
+
+  <div class="col-12">
+    <div class="card shadow-sm mt-4">
+      <div class="card-body">
+        <h5 class="mb-3">Sightings map</h5>
+        <div class="ratio ratio-16x9"><div id="profile-map"></div></div>
       </div>
     </div>
   </div>
 
-  <!-- thumbnail user gallery -->
-  <div class="container mt-1">
-    <h1 class="font-weight-light text-center text-lg-left mt-4 mb-0">
-      Birds shared so far...
-    </h1>
-    <hr class="mt-2 mb-5" />
-    <div class="row text-center text-lg-left">
+  <div class="col-12">
+    <h1 class="fw-light text-center mt-4 mb-0">Birds shared so far...</h1>
+    <hr class="mt-2 mb-4" />
+    <div class="row g-3">
       {% for bird in profile.photographers.all %}
-      <div class="col-lg-3 col-md-4 col-6">
-        <a href="{% url 'bird_detail' pk=bird.pk %}" class="d-block mb-4 h-100">
-          <img
-            class="img-fluid img-thumbnail profile_birds"
-            src="{{ bird.picture.url }}"
-            alt="bird picture"
-          />
+      <div class="col-6 col-md-4 col-lg-3">
+        <a href="{% url 'bird_detail' pk=bird.pk %}" class="text-decoration-none">
+          <div class="card h-100 shadow-sm">
+            <div class="ratio ratio-4x3">
+              <img class="card-img-top object-fit-cover" src="{{ bird.picture.url }}" alt="bird picture" />
+            </div>
+          </div>
         </a>
       </div>
       {% empty %}
-      <div class="col-12 mb-3" style="text-align: center;">
+      <div class="col-12 mb-3 text-center">
         {% if profile == user %}
-          <h4>
-            No contributions yet... To start sharing, click
-            <a href="{% url 'add_bird' %}">here</a>
-          </h4>
+          <h4>No contributions yet... To start sharing, <a href="{% url 'add_bird' %}">add your first bird</a>.</h4>
         {% else %}
-          <h4>
-            This user hasn't contributed yet!
-          </h4>
+          <h4>This user hasn't contributed yet!</h4>
         {% endif %}
       </div>
       {% endfor %}
     </div>
   </div>
-  <!-- thumbnail user gallery end -->
 
-{% include 'pagination.html' %}
+  {% include 'pagination.html' %}
 </div>
 {% include 'footer.html' %}
+  <script>var PROFILE_BIRDS = [
+    {% for bird in profile.photographers.all %}
+      {% if bird.latitude and bird.longitude %}
+        {lat: {{ bird.latitude }}, lng: {{ bird.longitude }}, image: "{{ bird.picture.url }}", url: "{% url 'bird_detail' pk=bird.pk %}", species: "{{ bird.species|escapejs }}"},
+      {% endif %}
+    {% endfor %}
+  ];</script>
+  <script src="{% static 'js/maps.js' %}"></script>
+  {% if gmaps_api_key %}
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ gmaps_api_key }}&callback=initProfileMap" async defer></script>
+  {% else %}
+    <script>document.addEventListener('DOMContentLoaded', initProfileMap);</script>
+  {% endif %}
 {% endblock content %}

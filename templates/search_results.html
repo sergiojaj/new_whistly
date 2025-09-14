@@ -3,78 +3,60 @@
 {% block title %}Whistly - Search{% endblock title %} 
 
 {% block content %}
-
-<div class="container">
-  <div class="row">
-    <div class="col-12" align="center">
-      <h3 class="mb-3"><i class="fa fa-file-o"></i> Whistly - Search Results</h3>
-      <p class="">Please find bellow the result of your search</p>
-      <p class="mb-3">or start a new search...</p>
-      <form action="{% url 'search_results' %}" method="GET">
-        <input
-          type="text"
-          name="q"
-          class="form-control"
-          placeholder="eg.: bird species... location... photographer"
-          style="max-width: 600px;"
-        >
-        <button class="btn btn-info" type="button" style="width: auto; height:auto">
-          <i class="fa fa-search"></i>
-        </button>
+<div class="container py-3">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-10">
+      <h3 class="text-center mb-1">Search results</h3>
+      <p class="text-center text-muted">Search by species, location or photographer</p>
+      <form class="d-flex gap-2 justify-content-center mb-3" action="{% url 'search_results' %}" method="get">
+        <input type="text" name="q" class="form-control" placeholder="e.g. robin, park, alice" style="max-width: 520px;" value="{{ request.GET.q }}">
+        <button class="btn btn-primary" type="submit"><i class="fa-solid fa-magnifying-glass me-1"></i>Search</button>
       </form>
-            
       {% if user_search %}
-        <p>Showing all results matching <strong>{{user_search}}</strong></p>
+        <p class="text-center">Showing results for <strong>{{ user_search }}</strong></p>
       {% endif %}
+
+      <div class="d-flex justify-content-end mb-2">
+        <div class="dropdown">
+          <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="orderDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            Order by
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="orderDropdown">
+            <li><a class="dropdown-item" href="?q={{ request.GET.q }}&order_by=comment">Most comments</a></li>
+            <li><a class="dropdown-item" href="?q={{ request.GET.q }}&order_by=seed">Most seeds</a></li>
+            <li><a class="dropdown-item" href="?q={{ request.GET.q }}&order_by=species">Species A–Z</a></li>
+            <li><a class="dropdown-item" href="?q={{ request.GET.q }}&order_by=photographer">Photographer A–Z</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        {% for result in bird_list %}
+        <div class="col-12 col-sm-6 col-lg-4">
+          <a class="text-decoration-none" href="{{ result.get_absolute_url }}">
+            <div class="card shadow-sm h-100">
+              <div class="ratio ratio-4x3">
+                <img class="card-img-top object-fit-cover" src="{{ result.picture.url }}" alt="{{ result.species }}">
+              </div>
+              <div class="card-body">
+                <h5 class="card-title mb-1">{{ result.species }}</h5>
+                <div class="text-muted small d-flex justify-content-between">
+                  <span>By {{ result.photographer|capfirst }}</span>
+                  <span><i class="fas fa-seedling"></i> {{ result.seeds.count }}</span>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+        {% empty %}
+        <div class="col-12">
+          <div class="alert alert-info">No results found. Try a different search.</div>
+        </div>
+        {% endfor %}
+      </div>
+
+      {% include 'pagination.html' %}
     </div>
   </div>
-
-  <div class="row mb-3">
-
-    <div class="container col-12" align=center>
-    <div class="dropdown">
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Order by:
-      </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <!-- one can build own search criteria and the name order_by serves as a dict new key -->
-          <a class="dropdown-item" href="?q={{ request.GET.q }}&order_by=comment">Most comments</a>
-          <a class="dropdown-item" href="?q={{ request.GET.q }}&order_by=seed">Most seeds</a>
-          <a class="dropdown-item" href="?q={{ request.GET.q }}&order_by=species">Species a-z</a>
-          <a class="dropdown-item" href="?q={{ request.GET.q }}&order_by=photographer">Photographer a-z</a>
-        </div>
-   </div>
-
-  </div>
-
-   <!-- search starts here -->
-      {% for result in bird_list %}
-        <div class="container">
-          <!-- comments start -->
-          <div class="media mt-3 p-3">
-            <a href="{{ result.get_absolute_url }}">
-              <img class="mr-3 img-thumbnail" src="{{ result.picture.url }}" alt="Generic placeholder image" style="height: 150px; width: 200px;">
-            </a>
-            <div class="media-body">
-              <p class="small float-right">Photographer: {{ result.photographer|capfirst }}</p>
-              <h5 class="mt-0">Species: {{ result.species }}
-                <span class="ml-2">
-                  <i class="fas fa-seedling"></i> 
-                  {{ result.seeds.count }}
-                </span>
-              </h5>
-              {{ result.photographer_comment }}
-            </div>
-          </div>
-          </div>
-      {% endfor %}
-      <!-- search ends here -->
-
-
 </div>
-<!-- main row ends here -->
-</div>
-
-{% include 'pagination.html' %}
-
 {% endblock content %}

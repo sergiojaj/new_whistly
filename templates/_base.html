@@ -6,9 +6,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="Description" content="Enter your description here"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link rel="stylesheet" href="{% static 'css/base.css' %}">
+{% if adsense_client_id %}
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ adsense_client_id }}" crossorigin="anonymous"></script>
+{% endif %}
 
 <title>{% block title %}Whistly{% endblock title %}</title>
 </head>
@@ -17,21 +20,21 @@
 <div id="main-div">
   
   <!-- navbar -->
-    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark shadow-sm">
       <div class="container">
         <div class="navbar-header">
           <a href="{% url 'home' %}" class="navbar-brand">
-            <i class="fab fa-earlybirds"></i>
+            <i class="fa-brands fa-earlybirds"></i>
             Whistly
           </a>
         </div>
-        <button class="navbar-toggler btn_navbar" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" 
+        <button class="navbar-toggler btn_navbar" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" 
               aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" >
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
         
-        <ul class="navbar-nav mr-auto">
+        <ul class="navbar-nav me-auto">
           {% if user.is_authenticated %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'profile_detail' pk=user.pk %}">{{ user|title }}'s Flock</a></li>
@@ -41,11 +44,19 @@
               <a class="nav-link" href="{% url 'birds_nest' %}">Bird's Nest</a></li>
         </ul>
         
-        <ul class="navbar-nav ml-auto">
+        <ul class="navbar-nav ms-auto align-items-center">
           {% if user.is_authenticated %}
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'add_bird' %}">Feathers UP</a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'my_birds_map' %}">My Map</a>
+              </li>
+              {% if donation_url or stripe_payment_link %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'support' %}">Support</a>
+              </li>
+              {% endif %}
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
               </li>
@@ -58,8 +69,8 @@
               </li>
           {% endif %}
             <!-- search form -->
-            <form action="{% url 'search_results' %}" method="GET" class="form-inline my-2 my-lg-0">
-              <input name='q' class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <form action="{% url 'search_results' %}" method="GET" class="d-flex ms-3" role="search">
+              <input name='q' class="form-control" type="search" placeholder="Search" aria-label="Search">
             </form>
         </ul>
 
@@ -81,9 +92,6 @@
 
 
 <script src="{% static 'js/base.js' %}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
-<script src="https://kit.fontawesome.com/e27a9e42a9.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

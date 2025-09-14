@@ -1,25 +1,70 @@
 {% extends '_base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 {% block title %}Feathers UP{% endblock title %}
 
 {% block content %}
-
-<!-- <div class="container mb-4" align=center style="width: 400px;"> -->
-    
-<div class="form-group container forms" align=center>
-
-    <form method="POST" enctype="multipart/form-data">
-        <h3>Enter details bellow</h3>
-        <p>Make sure to add as much details as possible.</p>
-        {% csrf_token %}
-        {{ form.species|as_crispy_field }}
-        {{ form.location|as_crispy_field }}
-        {{ form.picture }}
-        {{ form.photographer_comment|as_crispy_field }}
-        <button type="submit" class="btn btn-primary">Hatch Egg</button>
-    </form>
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-10">
+      <div class="card shadow-sm mb-3">
+        <div class="card-body p-4">
+          <h3 class="h4 mb-1">Feathers UP</h3>
+          <p class="text-muted small mb-3">Pick the location on the map or search it, then upload your photo.</p>
+          <div class="row g-3">
+            <div class="col-12 col-lg-6 order-2 order-lg-1">
+              <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.latitude }}
+                {{ form.longitude }}
+                <div class="mb-1">
+                  {{ form.species|as_crispy_field }}
+                  <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <button class="btn btn-outline-secondary btn-sm" type="button" id="species-suggest-btn"><i class="fa-solid fa-wand-magic-sparkles"></i> AI suggest species</button>
+                    <small id="species-suggest-status" class="text-muted"></small>
+                  </div>
+                  <div id="species-suggestions" class="small mt-2"></div>
+                </div>
+                {{ form.location|as_crispy_field }}
+                {{ form.picture|as_crispy_field }}
+                {{ form.photographer_comment|as_crispy_field }}
+                <button type="submit" class="btn btn-primary mt-2">Hatch Egg</button>
+              </form>
+            </div>
+            <div class="col-12 col-lg-6 order-1 order-lg-2">
+              <div class="ratio ratio-4x3">
+                <div id="add-bird-map"></div>
+              </div>
+              <div class="input-group input-group-sm mt-2">
+                <input type="text" id="map-search" class="form-control" placeholder="Search location (OpenStreetMap)">
+                <button class="btn btn-outline-secondary" type="button" id="map-search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+              </div>
+              <small class="text-muted">Tip: click on the map to set an exact location. Search uses OpenStreetMap (Nominatim).</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-<!-- </div> -->
-
+<script src="{% static 'js/maps.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.min.js"></script>
+<script src="{% static 'js/species.js' %}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function(){
+    initAddBirdMap();
+    window.HF_ENABLED = {{ hf_enabled|yesno:'true,false' }};
+    var btn=document.getElementById('map-search-btn');
+    var input=document.getElementById('map-search');
+    if(btn&&input){
+      function doSearch(){ if (window.searchNominatim) { window.searchNominatim(input.value, '{{ nominatim_email|default:"" }}'); } }
+      btn.addEventListener('click', doSearch);
+      input.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); doSearch(); }});
+    }
+  });
+</script>
+{% if gmaps_api_key %}
+  <script src="https://maps.googleapis.com/maps/api/js?key={{ gmaps_api_key }}&libraries=places&callback=initAddBirdMap" async defer></script>
+{% endif %}
 {% endblock content %}

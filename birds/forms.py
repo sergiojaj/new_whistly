@@ -1,5 +1,6 @@
 from django import forms
 from .models import Bird, Comment, Reply
+from django import forms
 
 class CommentForm(forms.ModelForm):
 
@@ -29,11 +30,13 @@ class AddBirdForm(forms.ModelForm):
     
     class Meta:
         model = Bird
-        fields = ('species','location','picture','photographer_comment')
+        fields = ('species','location','latitude','longitude','picture','photographer_comment')
 
         widgets = {
                     "species": forms.TextInput(attrs={'class': 'form-control'}),
-                    "location": forms.TextInput(attrs={'class': 'form-control'}),
+                    "location": forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Search a place or click on map'}),
+                    "latitude": forms.HiddenInput(),
+                    "longitude": forms.HiddenInput(),
                     "picture": forms.FileInput(attrs={"type":"file", "class":"form-control-file"}),
                     "photographer_comment": forms.Textarea(attrs={'class': 'form-control', "style":"height:80px mt-2"})
                 }

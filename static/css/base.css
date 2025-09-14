@@ -12,6 +12,12 @@ body {
   position: relative
 }
 
+:root{
+  --brand-primary:#0d6efd;
+  --brand-dark:#09203f;
+  --card-hover-shadow:0 10px 20px rgba(9,32,63,0.15);
+}
+
 .into_text{
   text-shadow: 2px 2px 3px gainsboro;
 }
@@ -188,6 +194,19 @@ button{
   background: linear-gradient(45deg,#efefef 25%,transparent 0,transparent 75%,#efefef 0,#efefef),linear-gradient(45deg,#efefef 25%,transparent 0,transparent 75%,#efefef 0,#efefef);
 }
 
+/* utility */
+.object-fit-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* map containers fill ratio wrappers */
+#add-bird-map, #profile-map, #bird-map {
+  width: 100%;
+  height: 100%;
+}
+
 /* comments */
 .comment_picture_size{
     width: 64px;
@@ -199,6 +218,17 @@ button{
   height: auto;
 
 }
+
+/* modern touches */
+.card-hover{ transition: transform .15s ease, box-shadow .15s ease; }
+.card-hover:hover{ transform: translateY(-2px); box-shadow: var(--card-hover-shadow); }
+
+/* comment media modern look */
+.media{ border-radius:12px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.media .comment_picture_size{ border:2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.15); }
+
+/* tags/pills */
+.pill{ display:inline-block; padding:.2rem .6rem; border-radius:999px; background:#f1f5f9; color:#334155; font-size:.75rem; }
 
 /* all django forms */
 .forms {

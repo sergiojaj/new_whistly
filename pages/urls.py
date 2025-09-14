@@ -5,7 +5,7 @@ from .views import (HomeTemplateView, RemoveAccountDeleteView,
                     AddBirdCreateView, BirdsNestListView, BirdUpdateView, BirdDeleteView,BirdDetailSimpleView,
                     EditCommentUpdateView, EditReplyUpdateView,
                     Seed_Add_Remove_View, SearchResultsListView,
-                    CustomPasswordChangeView,
+                    CustomPasswordChangeView, SupportTemplateView, MyBirdsMapView, SuggestSpeciesView,
                     )
 # func based views
 from .views import approve_comment, remove_comment, approve_reply, remove_reply
@@ -43,5 +43,14 @@ urlpatterns = [
 
     #search
     path('search/', SearchResultsListView.as_view(), name='search_results'),
+
+    #support/monetization
+    path('support/', SupportTemplateView.as_view(), name='support'),
+
+    # my birds full-screen map
+    path('my_birds_map/', MyBirdsMapView.as_view(), name='my_birds_map'),
+
+    # API: species suggestion
+    path('api/suggest/species/', SuggestSpeciesView.as_view(), name='suggest_species'),
 ]
 

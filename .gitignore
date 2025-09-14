@@ -31,3 +31,27 @@ media/bird/zdenek-machacek-Vu4-Il_2Kdo-unsplash_zKvptwV.jpg
 media/bird/andrew-pons-lylCw4zcA7I-unsplash_TusMIIL_G1LnnRB.jpg
 media/bird/andrew-pons-lylCw4zcA7I-unsplash_TusMIIL.jpg
 server.log
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# Env
+.venv/
+venv/
+env/
+
+# OS/IDE
+.DS_Store
+.vscode/
+*.log
+
+# Media generated locally
+media/bird/seed_*/
+media/bird/*.jfif
+server.log
+
+db.sqlite3
